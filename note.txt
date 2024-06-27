@@ -1,0 +1,21 @@
+Domain ve Hosting hizmeti
+
+-Sitenin ihtiyacını karşılayacak Veri tabanı oluşturulacak ve bağlantı kurulacak
+
+  Abone Ol butonu işlevlik kazanacak -- database
+
+  Admin paneli oluşturulacak
+
+  Blog sayfasına arama filtresi işlevlik kazanacak
+
+  Meta etiketleri oluşturulacak
+
+  SEO optimizasyonu yapılacak
+
+  Son kez etiket kontrolu yapılcak (article, main vb.)
+
+  paylaş ikonlarının url kısmına domain adresini yazıp ilgili gönderiyi paylaşmaya ayarlamam gerekiyor
+
+  Test aşaması
+
+  yayınlanma aşaması
