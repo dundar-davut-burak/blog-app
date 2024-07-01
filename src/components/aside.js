@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export default function Aside() {
   return (
-    <div className="lg:col-span-1 lg:w-full lg:h-full">
+    <aside className="lg:col-span-1 lg:w-full lg:h-full">
       <div className="sticky top-0 start-0 py-8 lg:ps-8">
         <Link
           href={"/hakkimda"}
@@ -88,6 +88,6 @@ export default function Aside() {
           </Link>
         </div>
       </div>
-    </div>
+    </aside>
   );
 }

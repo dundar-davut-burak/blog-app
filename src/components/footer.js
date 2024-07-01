@@ -9,18 +9,6 @@ export default function Footer() {
           href={"/"}
           className="flex title-font font-medium items-center md:justify-start justify-center text-gray-900"
         >
-          {/* <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            className="w-10 h-10 text-white p-2 bg-indigo-500 rounded-full"
-            viewBox="0 0 24 24"
-          >
-            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
-          </svg> */}
           <Image alt={"Logo"} src={"/logo.png"} width={64} height={64} />
           <span className="ml-3 text-xl">Aklımdakiler</span>
         </Link>
@@ -29,8 +17,8 @@ export default function Footer() {
           <Link
             href="https://tr.linkedin.com/in/davut-burak"
             className="text-gray-600 ml-1"
-            rel="noopener noreferrer"
             target="_blank"
+            rel="noopener noreferrer"
           >
             @Davut_Burak_
           </Link>
@@ -38,7 +26,9 @@ export default function Footer() {
         <span className="inline-flex sm:ml-auto sm:mt-0 mt-4 justify-center sm:justify-start">
           <Link
             href={"https://instagram.com/19bilgehan38"}
-            className="ml-3 text-gray-500"
+            className="ml-3 text-gray-500 hover:text-indigo-600"
+            target="_blank"
+            rel="noopener noreferrer"
           >
             <svg
               fill="none"
@@ -55,7 +45,9 @@ export default function Footer() {
           </Link>
           <Link
             href={"https://twitter.com/18bilgehan81"}
-            className="ml-3 text-gray-500"
+            className="ml-3 text-gray-500 hover:text-indigo-600"
+            target="_blank"
+            rel="noopener noreferrer"
           >
             <svg
               fill="currentColor"
@@ -72,7 +64,10 @@ export default function Footer() {
             href={
               "https://tr.linkedin.com/in/bilgehan-kocab%C4%B1y%C4%B1k-bb718230a"
             }
-            className="ml-3 text-gray-500"
+            className="ml-3 text-gray-500 hover:text-indigo-600"
+// Suggested code may be subject to a license. Learn more: ~LicenseLog:956378070.
+            target="_blank"
+            rel="noopener noreferrer"
           >
             <svg
               fill="currentColor"
