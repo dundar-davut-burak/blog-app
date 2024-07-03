@@ -6,7 +6,14 @@ import Authentication from "@/components/authentication";
 
 export default function AdminLayout({ children }) {
 
-    const [admin, setAdmin] = useState(false);
+    const [admin, setAdmin] = useState({
+        uid: null,
+        email: null,
+        displayName: null,
+        photoURL: null,
+        emailVerified: null,
+        session: false
+    });
 
     const value = {
         admin, setAdmin
@@ -14,7 +21,7 @@ export default function AdminLayout({ children }) {
 
     return (
         <AdminContext.Provider value={value}>
-            {admin ?
+            {admin.session ?
                 <div className="flex flex-1">
                     <AdminNavbar />
                     <main className="p-4">
