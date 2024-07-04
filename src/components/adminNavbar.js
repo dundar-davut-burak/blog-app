@@ -1,15 +1,40 @@
-import Image from "next/image";
+import { AdminContext } from "@/context/adminContext";
+import { auth } from "@/database/firebase";
+import { signOut } from "firebase/auth";
 import Link from "next/link";
+import { useContext, useState } from "react";
+import { ErrorNotification } from "./notifications";
 
 export default function AdminNavbar() {
+    let { setAdmin } = useContext(AdminContext);
+    const [showNotification, setShowNotification] = useState(false);
+
+    const signOutF = () => {
+        signOut(auth).then(() => {
+            // Sign-out successful.
+            setAdmin({
+                uid: null,
+                email: null,
+                displayName: null,
+                photoURL: null,
+                emailVerified: null,
+                session: false
+            })
+        }).catch((error) => {
+            // An error happened.
+            setShowNotification(true);
+            console.log(error);
+        });
+    }
+
     return (
         <div className="hidden md:flex md:w-64 md:flex-col">
             <div className="flex flex-col flex-grow overflow-y-auto bg-white">
                 <nav className="flex flex-col flex-1 px-3 mt-6">
                     <div className="space-y-4">
                         <div className="flex-1 space-y-2">
-                            <Link href="#" title="" className="flex items-center px-4 py-2.5 text-sm font-medium text-white transition-all duration-200 bg-indigo-600 rounded-lg group">
-                                <svg className="flex-shrink-0 w-5 h-5 mr-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                            <Link href="/admin" title="" className="flex items-center px-4 py-2.5 text-sm font-medium transition-all duration-200 text-gray-900 hover:text-white rounded-lg hover:bg-indigo-600 group">
+                                <svg className="flex-shrink-0 w-5 h-5 mr-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                                 </svg>
                                 Gösterge Paneli
@@ -19,18 +44,11 @@ export default function AdminNavbar() {
                         <hr className="border-gray-200" />
 
                         <div className="flex-1 space-y-2">
-                            <Link href="#" className="flex items-center px-4 py-2.5 text-sm font-medium transition-all duration-200 text-gray-900 hover:text-white rounded-lg hover:bg-indigo-600 group">
+                            <Link href="/admin/blog" className="flex items-center px-4 py-2.5 text-sm font-medium transition-all duration-200 text-gray-900 hover:text-white rounded-lg hover:bg-indigo-600 group">
                                 <svg className="flex-shrink-0 w-5 h-5 mr-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
                                 </svg>
                                 Blog
-                            </Link>
-
-                            <Link href="#" className="flex items-center px-4 py-2.5 text-sm font-medium transition-all duration-200 text-gray-900 hover:text-white rounded-lg hover:bg-indigo-600 group">
-                                <svg className="flex-shrink-0 w-5 h-5 mr-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                                </svg>
-                                Bildirimler
                             </Link>
 
                             <Link href="#" className="flex items-center px-4 py-2.5 text-sm font-medium transition-all duration-200 text-gray-900 hover:text-white rounded-lg hover:bg-indigo-600 group">
@@ -63,14 +81,10 @@ export default function AdminNavbar() {
                             </Link>
                         </div>
                     </div>
-
+                    {showNotification ? <ErrorNotification message={"Çıkış yapılamadı"} /> : <></>}
                     <div className="pt-4">
-                        <button type="button" className="flex items-center justify-between w-full px-4 py-3 text-sm font-medium text-gray-900 transition-all duration-200 rounded-lg hover:bg-gray-100">
-                            <Image width={64} height={64} className="flex-shrink-0 object-cover w-12 h-12 mr-3 rounded-full" src="https://dummyimage.com/100x100" alt="Profile" />
-                            Bilgehan Kocabıyık
-                            <svg className="w-5 h-5 ml-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
-                            </svg>
+                        <button onClick={signOutF} type="button" className="items-center w-full p-2 border-2 border-red-500 text-sm font-medium text-red-500 transition-all duration-200 rounded-lg hover:bg-red-500 hover:text-white">
+                            Çıkış Yap
                         </button>
                     </div>
                 </nav>

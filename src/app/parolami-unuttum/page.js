@@ -11,7 +11,7 @@ export default function ForgotPasswordPage() {
     }
 
     const form = useRef();
-    const email_error = document.getElementById("email-error");
+    const [display, setDisplay] = useState("hidden");
     const [showNotification, setShowNotification] = useState(false);
 
 
@@ -22,9 +22,10 @@ export default function ForgotPasswordPage() {
         sendPasswordResetEmail(auth, form.current.email.value)
             .then(() => {
                 // Password reset email sent!
+                setDisplay("hidden");
                 setShowNotification(true)
             }).catch((error) => {
-                email_error.style.display = "block";
+                setDisplay("block");
 
                 const errorCode = error.code;
                 const errorMessage = error.message;
@@ -53,7 +54,7 @@ export default function ForgotPasswordPage() {
                             <div>
                                 <label htmlFor="email" className="block text-sm mb-2">E-posta</label>
                                 <input type="email" id="email" name="email" className="py-3 px-4 block w-full ring-1 rounded-lg text-sm outline-none focus:ring-indigo-500 focus:ring-2" required aria-describedby="email-error" />
-                                <p style={{ display: "none" }} className="text-xs text-red-600 mt-2" id="email-error">Lütfen geçerli bir e-posta adresi girin</p>
+                                <p className={`${display} text-xs text-red-600 mt-2`} id="email-error">Lütfen geçerli bir e-posta adresi girin</p>
                             </div>
 
                             <button type="submit" className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-indigo-600 text-white hover:bg-indigo-700">Gönder</button>
