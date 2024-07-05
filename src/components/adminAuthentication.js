@@ -5,7 +5,7 @@ import { auth } from "@/database/firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { AdminContext } from "@/context/adminContext";
 
-export default function Authentication() {
+export default function AdminAuthentication() {
     const form = useRef();
     let { setAdmin } = useContext(AdminContext);
     const [display, setDisplay] = useState("hidden");

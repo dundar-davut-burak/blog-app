@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import AdminNavbar from "@/components/adminNavbar";
 import { AdminContext } from "@/context/adminContext";
-import Authentication from "@/components/authentication";
+import AdminAuthentication from "@/components/adminAuthentication";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "@/database/firebase";
 
@@ -55,7 +55,7 @@ export default function AdminLayout({ children }) {
                         {children}
                     </main>
                 </div> :
-                <Authentication />
+                <AdminAuthentication />
             }
         </AdminContext.Provider>
     )
