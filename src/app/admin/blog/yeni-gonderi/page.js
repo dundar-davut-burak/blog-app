@@ -1,11 +1,9 @@
-import dynamic from 'next/dynamic';
-
-const CustomEditor = dynamic( () => import( '@/components/textEditor' ), { ssr: false } );
+import AdminNewPostForm from '@/components/adminNewPostForm';
 
 export default function NewPost() {
     return (
         <section>
-            <CustomEditor />
+            <AdminNewPostForm />
         </section>
     )
 }
