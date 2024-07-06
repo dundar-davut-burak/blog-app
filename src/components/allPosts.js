@@ -5,8 +5,8 @@ export default function AllPosts() {
   return (
     <section className="text-gray-600 body-font">
       <div className="container px-5 py-16 mx-auto">
-        <div className="flex flex-wrap -m-4">
-          <div className="p-4 md:w-1/3">
+        <div className="grid grid-cols-3 sm:grid-cols-1 gap-5 -m-4">
+          <div className="p-4">
             <div className="h-full border-2 border-gray-200 border-opacity-60 rounded-lg overflow-hidden">
               <Image
                 className="lg:h-48 md:h-36 w-full object-cover object-center"
@@ -52,7 +52,7 @@ export default function AllPosts() {
               </div>
             </div>
           </div>
-          <div className="p-4 md:w-1/3">
+          <div className="p-4">
             <div className="h-full border-2 border-gray-200 border-opacity-60 rounded-lg overflow-hidden">
               <Image
                 className="lg:h-48 md:h-36 w-full object-cover object-center"
@@ -98,7 +98,7 @@ export default function AllPosts() {
               </div>
             </div>
           </div>
-          <div className="p-4 md:w-1/3">
+          <div className="p-4">
             <div className="h-full border-2 border-gray-200 border-opacity-60 rounded-lg overflow-hidden">
               <Image
                 className="lg:h-48 md:h-36 w-full object-cover object-center"
