@@ -1,5 +1,5 @@
 "use client"
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 
 import {
@@ -51,9 +51,7 @@ import translations from 'ckeditor5/translations/tr.js';
 import 'ckeditor5/ckeditor5.css';
 
 
-export default function App() {
-    const editorContainerRef = useRef(null);
-    const editorRef = useRef(null);
+export default function TextEditor() {
     const [isLayoutReady, setIsLayoutReady] = useState(false);
 
     useEffect(() => {
@@ -212,9 +210,16 @@ export default function App() {
     return (
         <div>
             <div className="main-container">
-                <div className="editor-container editor-container_classic-editor" ref={editorContainerRef}>
+                <div className="editor-container editor-container_classic-editor">
                     <div className="editor-container__editor">
-                        <div ref={editorRef}>{isLayoutReady && <CKEditor editor={ClassicEditor} config={editorConfig} />}</div>
+                        <div>
+                            {isLayoutReady &&
+                                <CKEditor
+                                    editor={ClassicEditor}
+                                    config={editorConfig}
+                                />
+                            }
+                        </div>
                     </div>
                 </div>
             </div>

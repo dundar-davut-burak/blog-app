@@ -65,7 +65,7 @@ export default function PostsTable() {
                                     <tr>
                                         <td className="size-px whitespace-nowrap">
                                             <div className="ps-6 py-3">
-                                                <label for="hs-at-with-checkboxes-12" className="flex">
+                                                <label htmlFor="hs-at-with-checkboxes-12" className="flex">
                                                     <input type="checkbox" className="shrink-0 border-gray-300 rounded text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none" id="hs-at-with-checkboxes-12" />
                                                     <span className="sr-only">Checkbox</span>
                                                 </label>
