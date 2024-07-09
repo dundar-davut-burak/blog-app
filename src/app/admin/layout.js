@@ -5,6 +5,7 @@ import { AdminContext } from "@/context/adminContext";
 import AdminAuthentication from "@/components/adminAuthentication";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "@/database/firebase";
+import NextBreadcrumb from "@/components/breadcrumb";
 
 export default function AdminLayout({ children }) {
 
@@ -52,6 +53,14 @@ export default function AdminLayout({ children }) {
                 <div className="flex flex-1">
                     <AdminNavbar />
                     <main className="p-4 w-full">
+                        <NextBreadcrumb
+                            homeElement={'Ana Sayfa'}
+                            separator={<span className="text-gray-500"> {">"} </span>}
+                            activeClasses='text-indigo-500'
+                            containerClasses='flex p-4 mb-2 items-center'
+                            listClasses='text-gray-500 mx-2'
+                            capitalizeLinks
+                        />
                         {children}
                     </main>
                 </div> :

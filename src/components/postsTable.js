@@ -1,6 +1,42 @@
+"use client";
 import Link from "next/link";
+import { collection, deleteDoc, getDocs, doc } from "firebase/firestore";
+import { db } from "@/database/firebase";
+import { useEffect, useState } from "react";
+import { SuccesssNotification } from "./notifications";
 
 export default function PostsTable() {
+    const [docs, setDocs] = useState([]);
+    const [isDataReady, setIsDataReady] = useState(false);
+
+    const [showSuccessNatification, setShowSuccessNatification] = useState(false);
+    const [showErrorNatification, setShowErrorNatification] = useState(false);
+
+    const deleteArticle = (id) => {
+
+        alert("Silmek istediğinize emin misiniz?");
+
+        const docRef = doc(db, "posts", id);
+
+        deleteDoc(docRef).then(() => {
+            setShowSuccessNatification(true);
+        }).catch((error) => {
+            setShowErrorNatification(true);
+        });
+    }
+
+    useEffect(() => {
+        const querySnapshot = getDocs(collection(db, "posts"));
+        querySnapshot.then((querySnapshot) => {
+            const docs = [];
+            querySnapshot.forEach((doc) => {
+                docs.push({ ...doc.data(), id: doc.id });
+            });
+            setDocs(docs);
+            setIsDataReady(true);
+        });
+    }, [])
+
     return (
         <div className="px-2 sm:px-4 lg:px-6 mx-auto">
             <div className="flex flex-col">
@@ -62,49 +98,62 @@ export default function PostsTable() {
                                 </thead>
 
                                 <tbody className="divide-y divide-gray-200 dark:divide-neutral-700">
-                                    <tr>
-                                        <td className="size-px whitespace-nowrap">
-                                            <div className="ps-6 py-3">
-                                                <label htmlFor="hs-at-with-checkboxes-12" className="flex">
-                                                    <input type="checkbox" className="shrink-0 border-gray-300 rounded text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none" id="hs-at-with-checkboxes-12" />
-                                                    <span className="sr-only">Checkbox</span>
-                                                </label>
-                                            </div>
-                                        </td>
-                                        <td className="size-px whitespace-nowrap">
-                                            <div className="ps-6 lg:ps-3 xl:ps-0 pe-6 py-3">
-                                                <div className="flex items-center gap-x-3">
-                                                    <div className="grow">
-                                                        <span className="block text-sm font-semibold text-gray-800">{"Jessica Williams"}</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td className="h-px whitespace-nowrap">
-                                            <div className="px-6 py-3">
-                                                <span className="block text-sm text-gray-500">{"Marketing"}</span>
-                                            </div>
-                                        </td>
-                                        <td className="size-px whitespace-nowrap">
-                                            <div className="px-6 py-3">
-                                                <span className="text-sm text-gray-500">{"18 Dec, 15:20"}</span>
-                                            </div>
-                                        </td>
-                                        <td className="size-px whitespace-nowrap">
-                                            <div className="px-6 py-1.5">
-                                                <Link className="inline-flex items-center gap-x-1 text-sm text-blue-600 decoration-2 hover:underline font-medium dark:text-blue-500" href="#">
-                                                    Düzenle
-                                                </Link>
-                                            </div>
-                                        </td>
-                                    </tr>
+                                    {showSuccessNatification && <SuccesssNotification message="Silme işlemi başarılı" />}
+                                    {showErrorNatification && <ErrorNotification message="Silme işlemi başarısız" />}
+
+                                    {
+                                        isDataReady &&
+                                        docs.map((doc) => {
+                                            return (
+                                                <tr key={doc.id}>
+                                                    <td className="size-px whitespace-nowrap">
+                                                        <div className="ps-6 py-3">
+                                                            <button
+                                                                type="button"
+                                                                className="inline-flex items-center gap-x-1 text-sm text-white bg-red-600 p-1.5 rounded-md shadow-sm decoration-2 hover:bg-red-700 font-medium"
+                                                                onClick={() => { deleteArticle(doc.id) }}
+                                                            >
+                                                                Sil
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                    <td className="size-px whitespace-nowrap">
+                                                        <div className="ps-6 lg:ps-3 xl:ps-0 pe-6 py-3">
+                                                            <div className="flex items-center gap-x-3">
+                                                                <div className="grow">
+                                                                    <span className="block text-sm font-semibold text-gray-800">{doc.title}</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td className="h-px whitespace-nowrap">
+                                                        <div className="px-6 py-3">
+                                                            <span className="block text-sm text-gray-500">{doc.category}</span>
+                                                        </div>
+                                                    </td>
+                                                    <td className="size-px whitespace-nowrap">
+                                                        <div className="px-6 py-3">
+                                                            <span className="text-sm text-gray-500">{doc.date}</span>
+                                                        </div>
+                                                    </td>
+                                                    <td className="size-px whitespace-nowrap">
+                                                        <div className="px-6 py-1.5">
+                                                            <Link className="inline-flex items-center gap-x-1 text-sm text-blue-600 decoration-2 hover:underline font-medium" href="#">
+                                                                Düzenle
+                                                            </Link>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            )
+                                        })
+                                    }
                                 </tbody>
                             </table>
 
                             <div className="px-6 py-4 grid gap-3 md:flex md:justify-between md:items-center border-t border-gray-200">
                                 <div>
                                     <p className="text-sm text-gray-600">
-                                        <span className="font-semibold text-gray-800">{"12"}</span> gösterilenler
+                                        Gönderi Sayısı: <span className={`font-semibold ${docs.length == 0 ? "text-red-600 text-lg" : "text-green-600"}`}>{docs.length}</span>
                                     </p>
                                 </div>
 
