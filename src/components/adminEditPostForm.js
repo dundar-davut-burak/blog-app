@@ -1,58 +1,84 @@
 "use client"
-import { useRef, useState } from 'react';
-import { auth, db } from '@/database/firebase';
-import { collection, addDoc } from "firebase/firestore";
+import { useState, useEffect, useRef } from "react";
+import {
+    doc,
+    getDoc,
+    updateDoc,
+} from "firebase/firestore";
+import { db } from "@/database/firebase";
+import { useParams, useRouter } from "next/navigation";
 import { ErrorNotification, SuccesssNotification } from './notifications';
-import { useRouter } from "next/navigation";
 
-export default function AdminNewPostForm() {
+
+const AdminEditPostForm = () => {
     const form = useRef();
-    const navigate = useRouter();
-
     const [showSuccess, setShowSuccess] = useState(false);
     const [showError, setShowError] = useState(false);
 
-    const handleSubmit = (e) => {
+    const [post, setPost] = useState({
+        title: "",
+        description: "",
+        content: "",
+        category: "",
+        tags: "",
+        image: "",
+        published: true
+    });
+
+    const { id } = useParams();
+    const navigate = useRouter();
+
+    useEffect(() => {
+        const getPost = async () => {
+            const docRef = doc(db, "posts", id);
+            const docSnap = await getDoc(docRef);
+
+            if (docSnap.exists()) {
+                setPost(docSnap.data());
+            } else {
+                console.log("No such document!");
+            }
+        };
+
+        getPost();
+    }, [id]);
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         try {
-            addDoc(collection(db, "posts"), {
+            const docRef = doc(db, "posts", id);
+            await updateDoc(docRef,{
                 title: form.current.title.value,
                 description: form.current.description.value,
                 content: form.current.content.value,
                 category: form.current.category.value,
                 tags: form.current.tags.value.split(','),
                 image: form.current.image.value,
-                writer: auth.currentUser.displayName !== null ? auth.currentUser.displayName : auth.currentUser.email,
-                date: new Date().toISOString().split('T')[0],
                 published: true
-            }).then(() => {
-                form.current.reset();
-                setShowSuccess(true);
-                setShowError(false);
-                setTimeout(() => {
-                    navigate.push("/admin/blog");
-                }, 3000);
-            }).catch((error) => {
-                setShowError(true);
-                setShowSuccess(false);
-                console.error("Error adding document: ", error);
             });
-        } catch (error) {
-            console.log(error)
-        }
 
-    }
+            setShowSuccess(true);
+            setShowError(false);
+
+            setTimeout(() => {
+                navigate.push("/admin/blog");
+            }, 3000);
+        } catch (error) {
+            setShowError(true);
+            setShowSuccess(false);
+        }
+    };
 
     return (
         <form className="border rounded-xl shadow-sm" method="POST" onSubmit={handleSubmit} ref={form}>
 
-            {showSuccess && <SuccesssNotification message={"Blog gönderisi başarıyla yayınlandı."} />}
+            {showSuccess && <SuccesssNotification message={"Blog gönderisi başarıyla güncellendi."} />}
             {showError && <ErrorNotification message={"Bir hata oluştu. Lütfen tekrar deneyin."} />}
 
             <div className="flex flex-col text-center w-full mt-12 -m-y-4">
-                <h1 className="sm:text-3xl text-2xl font-medium title-font my-3 text-indigo-600">
-                    Yeni Blog Gönderisi Yayınla
+                <h1 className="sm:text-3xl text-2xl font-medium title-font my-3 text-yellow-600">
+                    Blog Gönderinizi Güncelleyin
                 </h1>
             </div>
             <div className="flex flex-col px-6 py-4">
@@ -62,7 +88,8 @@ export default function AdminNewPostForm() {
                         type="text"
                         id="title"
                         name="title"
-                        className="py-3 px-4 block w-full ring-1 ring-gray-300 rounded-lg text-sm outline-none focus:ring-indigo-500 focus:ring-2"
+                        defaultValue={post.title}
+                        className="py-3 px-4 block w-full ring-1 ring-gray-300 rounded-lg text-sm outline-none focus:ring-yellow-500 focus:ring-2"
                         placeholder="Lütfen başlık giriniz"
                         title='Lütfen başlık giriniz'
                         minLength={5}
@@ -77,8 +104,9 @@ export default function AdminNewPostForm() {
                     <textarea
                         id="description"
                         name="description"
+                        defaultValue={post.description}
                         rows={3}
-                        className="py-3 px-4 block w-full ring-1 ring-gray-300 rounded-lg text-sm outline-none focus:ring-indigo-500 focus:ring-2"
+                        className="py-3 px-4 block w-full ring-1 ring-gray-300 rounded-lg text-sm outline-none focus:ring-yellow-500 focus:ring-2"
                         placeholder="Lütfen açıklama giriniz. Max. 300 kelime"
                         title='Lütfen açıklama giriniz. Max. 300 kelime'
                         minLength={50}
@@ -94,8 +122,9 @@ export default function AdminNewPostForm() {
                     <textarea
                         id="content"
                         name="content"
+                        defaultValue={post.content}
                         rows={20}
-                        className="py-3 px-4 block w-full ring-1 ring-gray-300 rounded-lg text-sm outline-none focus:ring-indigo-500 focus:ring-2"
+                        className="py-3 px-4 block w-full ring-1 ring-gray-300 rounded-lg text-sm outline-none focus:ring-yellow-500 focus:ring-2"
                         placeholder="Lütfen içerik giriniz"
                         title='Lütfen içerik giriniz'
                         minLength={500}
@@ -111,8 +140,8 @@ export default function AdminNewPostForm() {
                     <select
                         id="category"
                         name="category"
-                        className="py-3 px-4 block w-full ring-1 ring-gray-300 rounded-lg text-sm outline-none focus:ring-indigo-500 focus:ring-2"
-                        defaultValue="Seçiniz"
+                        defaultValue={post.category}
+                        className="py-3 px-4 block w-full ring-1 ring-gray-300 rounded-lg text-sm outline-none focus:ring-yellow-500 focus:ring-2"
                         title="Kategori seçiniz"
                         required
                     >
@@ -129,7 +158,8 @@ export default function AdminNewPostForm() {
                         type="text"
                         id="tags"
                         name="tags"
-                        className="py-3 px-4 block w-full ring-1 ring-gray-300 rounded-lg text-sm outline-none focus:ring-indigo-500 focus:ring-2"
+                        defaultValue={post.tags}
+                        className="py-3 px-4 block w-full ring-1 ring-gray-300 rounded-lg text-sm outline-none focus:ring-yellow-500 focus:ring-2"
                         placeholder="Etiketler (virgül ile ayırın)"
                         title="Etiketler (virgül ile ayırın)"
                         minLength={2}
@@ -145,7 +175,8 @@ export default function AdminNewPostForm() {
                         type="url"
                         id="image"
                         name="image"
-                        className="py-3 px-4 block w-full ring-1 ring-gray-300 rounded-lg text-sm outline-none focus:ring-indigo-500 focus:ring-2"
+                        defaultValue={post.image}
+                        className="py-3 px-4 block w-full ring-1 ring-gray-300 rounded-lg text-sm outline-none focus:ring-yellow-500 focus:ring-2"
                         placeholder="Resim url adresi seçiniz"
                         title='Resim url adresi seçiniz'
                         required
@@ -155,12 +186,14 @@ export default function AdminNewPostForm() {
                 <div className="p-2 my-4 w-full">
                     <button
                         type="submit"
-                        className="w-full text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg"
+                        className="w-full text-white bg-yellow-500 border-0 py-2 px-8 focus:outline-none hover:bg-yellow-600 rounded text-lg"
                     >
-                        Yayınla
+                        Güncelle
                     </button>
                 </div>
             </div>
         </form>
     )
-}
+};
+
+export default AdminEditPostForm;

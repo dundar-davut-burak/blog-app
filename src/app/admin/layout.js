@@ -54,7 +54,6 @@ export default function AdminLayout({ children }) {
                     <AdminNavbar />
                     <main className="p-4 w-full">
                         <NextBreadcrumb
-                            homeElement={'Ana Sayfa'}
                             separator={<span className="text-gray-500"> {">"} </span>}
                             activeClasses='text-indigo-500'
                             containerClasses='flex p-4 mb-2 items-center'

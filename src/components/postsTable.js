@@ -4,8 +4,13 @@ import { collection, deleteDoc, getDocs, doc } from "firebase/firestore";
 import { db } from "@/database/firebase";
 import { useEffect, useState } from "react";
 import { SuccesssNotification } from "./notifications";
+import { ErrorNotification } from "./notifications";
+import { useRouter } from "next/navigation";
 
 export default function PostsTable() {
+
+    const navigate = useRouter();
+
     const [docs, setDocs] = useState([]);
     const [isDataReady, setIsDataReady] = useState(false);
 
@@ -14,15 +19,18 @@ export default function PostsTable() {
 
     const deleteArticle = (id) => {
 
-        alert("Silmek istediğinize emin misiniz?");
-
         const docRef = doc(db, "posts", id);
 
-        deleteDoc(docRef).then(() => {
-            setShowSuccessNatification(true);
-        }).catch((error) => {
-            setShowErrorNatification(true);
-        });
+        if (confirm("Silmek istediğinize emin misiniz?") == true) {
+            deleteDoc(docRef).then(() => {
+                setShowSuccessNatification(true);
+                setTimeout(() => {
+                    navigate.refresh();
+                }, 1000);
+            }).catch((error) => {
+                setShowErrorNatification(true);
+            });
+        }
     }
 
     useEffect(() => {
@@ -35,7 +43,7 @@ export default function PostsTable() {
             setDocs(docs);
             setIsDataReady(true);
         });
-    }, [])
+    }, []);
 
     return (
         <div className="px-2 sm:px-4 lg:px-6 mx-auto">
@@ -64,10 +72,15 @@ export default function PostsTable() {
                                 </div>
                             </div>
 
+                            <div className="w-full p-3 text-center bg-gray-50">
+                                {showSuccessNatification && <SuccesssNotification message="Silme işlemi başarılı" />}
+                                {showErrorNatification && <ErrorNotification message="Silme işlemi başarısız" />}
+                            </div> <hr />
+
                             <table className="min-w-full divide-y divide-gray-200">
                                 <thead className="bg-gray-50">
                                     <tr>
-                                        <th scope="col" className="px-8 py-3 text-start"></th>
+                                        <th scope="col" className="px-4 py-3 text-start"></th>
 
                                         <th scope="col" className="ps-6 lg:ps-3 xl:ps-0 pe-6 py-3 text-start">
                                             <div className="flex items-center gap-x-2">
@@ -77,7 +90,7 @@ export default function PostsTable() {
                                             </div>
                                         </th>
 
-                                        <th scope="col" className="px-6 py-3 text-start">
+                                        <th scope="col" className="px-4 py-3 text-start">
                                             <div className="flex items-center gap-x-2">
                                                 <span className="text-xs font-semibold uppercase tracking-wide text-gray-800">
                                                     Kategori
@@ -85,7 +98,7 @@ export default function PostsTable() {
                                             </div>
                                         </th>
 
-                                        <th scope="col" className="px-6 py-3 text-start">
+                                        <th scope="col" className="px-4 py-3 text-start">
                                             <div className="flex items-center gap-x-2">
                                                 <span className="text-xs font-semibold uppercase tracking-wide text-gray-800">
                                                     Oluşturulma Tarihi
@@ -98,25 +111,12 @@ export default function PostsTable() {
                                 </thead>
 
                                 <tbody className="divide-y divide-gray-200 dark:divide-neutral-700">
-                                    {showSuccessNatification && <SuccesssNotification message="Silme işlemi başarılı" />}
-                                    {showErrorNatification && <ErrorNotification message="Silme işlemi başarısız" />}
-
                                     {
                                         isDataReady &&
                                         docs.map((doc) => {
                                             return (
                                                 <tr key={doc.id}>
-                                                    <td className="size-px whitespace-nowrap">
-                                                        <div className="ps-6 py-3">
-                                                            <button
-                                                                type="button"
-                                                                className="inline-flex items-center gap-x-1 text-sm text-white bg-red-600 p-1.5 rounded-md shadow-sm decoration-2 hover:bg-red-700 font-medium"
-                                                                onClick={() => { deleteArticle(doc.id) }}
-                                                            >
-                                                                Sil
-                                                            </button>
-                                                        </div>
-                                                    </td>
+                                                    <td className="size-px whitespace-nowrap"></td>
                                                     <td className="size-px whitespace-nowrap">
                                                         <div className="ps-6 lg:ps-3 xl:ps-0 pe-6 py-3">
                                                             <div className="flex items-center gap-x-3">
@@ -137,10 +137,20 @@ export default function PostsTable() {
                                                         </div>
                                                     </td>
                                                     <td className="size-px whitespace-nowrap">
-                                                        <div className="px-6 py-1.5">
-                                                            <Link className="inline-flex items-center gap-x-1 text-sm text-blue-600 decoration-2 hover:underline font-medium" href="#">
+                                                        <div className="px-6 py-1.5 flex items-center gap-x-3">
+                                                            <Link className="inline-flex items-center gap-x-1 text-sm text-white bg-yellow-500 p-1.5 rounded-md shadow-sm decoration-2 hover:bg-yellow-600 font-medium" href={`/admin/blog/${doc.id}`}>
                                                                 Düzenle
                                                             </Link>
+                                                            <button
+                                                                type="button"
+                                                                className="inline-flex items-center gap-x-1 text-sm text-white bg-red-500 p-1.5 rounded-md shadow-sm decoration-2 hover:bg-red-600 font-medium"
+                                                                onClick={() => { deleteArticle(doc.id) }}
+                                                            >
+
+                                                                <svg className="flex-shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                                    <path d="M19 7l-.867 12.142A2 2 0 0 1 16.138 21H7.862a2 2 0 0 1-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v3M4 7h16"></path>
+                                                                </svg>
+                                                            </button>
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -157,7 +167,7 @@ export default function PostsTable() {
                                     </p>
                                 </div>
 
-                                <div>
+                                {/* <div>
                                     <div className="inline-flex gap-x-2">
                                         <button type="button" className="py-1.5 px-2 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none">
                                             <svg className="flex-shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6" /></svg>
@@ -169,7 +179,7 @@ export default function PostsTable() {
                                             <svg className="flex-shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6" /></svg>
                                         </button>
                                     </div>
-                                </div>
+                                </div> */}
                             </div>
 
                         </div>

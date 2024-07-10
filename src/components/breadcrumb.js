@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 
 const NextBreadcrumb = ({
-    homeElement, separator, containerClasses, listClasses, activeClasses, capitalizeLinks
+    separator, containerClasses, listClasses, activeClasses, capitalizeLinks
 }) => {
 
     const paths = usePathname();
@@ -14,8 +14,6 @@ const NextBreadcrumb = ({
     return (
         <div>
             <ul className={containerClasses}>
-                <li className={listClasses}><Link href={'/'}>{homeElement}</Link></li>
-                {pathNames.length > 0 && separator}
                 {
                     pathNames.map((link, index) => {
                         let href = `/${pathNames.slice(0, index + 1).join('/')}`
