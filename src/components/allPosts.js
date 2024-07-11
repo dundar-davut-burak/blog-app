@@ -5,7 +5,7 @@ export default function AllPosts() {
   return (
     <section className="text-gray-600 body-font">
       <div className="container px-5 py-16 mx-auto">
-        <div className="grid grid-cols-3 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 -m-4">
+        <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 -m-4">
           <div className="p-4">
             <div className="h-full border-2 border-gray-200 border-opacity-60 rounded-lg overflow-hidden">
               <Image
