@@ -49,8 +49,8 @@ export default function PostsTable() {
         <div className="px-2 sm:px-4 lg:px-6 mx-auto">
             <div className="flex flex-col">
                 <div className="-m-1.5 overflow-x-auto">
-                    <div className="p-1.5 min-w-full inline-block align-middle">
-                        <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
+                    <div className="p-1.5 min-w-full align-middle">
+                        <div className="bg-white border border-gray-200 rounded-xl shadow-sm">
 
                             <div className="px-6 py-4 grid gap-3 md:flex md:justify-between md:items-center border-b border-gray-200">
                                 <div>
