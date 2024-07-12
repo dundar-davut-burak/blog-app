@@ -1,7 +1,9 @@
-export default function Settings() {
-    return (
-        <section>
-            <Settings />
-        </section>
-    )
+import Settings from "@/components/adminUpdateSettings";
+
+export default function SettingsPage() {
+  return (
+    <section>
+      <Settings />
+    </section>
+  );
 }
