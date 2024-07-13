@@ -1,13 +1,22 @@
 "use client"
-import React, { useState, useEffect } from 'react';
-import { db } from '@/database/firebase';
-import { collection, getDocs, doc, setDoc } from 'firebase/firestore';
+import React, { useState, useEffect, useRef } from 'react';
+import { db, storage } from '@/database/firebase';
+import { collection, getDocs, doc, updateDoc } from 'firebase/firestore';
+import { ref, uploadBytes } from "firebase/storage";
+import { SuccesssNotification } from './notifications';
 
 const AdminSiteSettings = () => {
+
+    const form = useRef();
+    const [showSuccess, setShowSuccess] = useState(false);
+    const [showError, setShowError] = useState(false);
+    const [message, setMessage] = useState(
+        "Bir hata oluştu. Lütfen tekrar deneyin."
+    );
+
     const [siteTitle, setSiteTitle] = useState('');
     const [siteDescription, setSiteDescription] = useState('');
-    const [siteLogo, setSiteLogo] = useState(null);
-    const [siteFavicon, setSiteFavicon] = useState(null);
+    const settingsRef = doc(db, 'siteSettings', 'settings');
 
     useEffect(() => {
         const fetchSettings = async () => {
@@ -17,31 +26,55 @@ const AdminSiteSettings = () => {
                 const settingsData = settingsSnapshot.docs[0].data();
                 setSiteTitle(settingsData.siteTitle || '');
                 setSiteDescription(settingsData.siteDescription || '');
-                setSiteLogo(settingsData.siteLogo || null);
-                setSiteFavicon(settingsData.siteFavicon || null);
             }
         };
         fetchSettings();
     }, []);
 
-    const handleSaveSettings = async () => {
+    const handleSaveSettings = async (e) => {
+
+        e.preventDefault();
+
+        const formData = new FormData(form.current);
+        const siteTitle = formData.get('siteTitle');
+        const siteDescription = formData.get('siteDescription');
+        const siteLogo = formData.get('siteLogo');
+        const siteFavicon = formData.get('siteFavicon');
+
+        const logoStorageRef = ref(storage, `images/${siteLogo.name}`);
+        const iconStorageRef = ref(storage, `images/${siteFavicon.name}`);
+
         try {
-            await setDoc(doc(db, 'siteSettings', 'settings'), {
-                siteTitle,
-                siteDescription,
-                siteLogo,
-                siteFavicon,
+            await updateDoc(settingsRef, {
+                siteTitle: siteTitle,
+                siteDescription: siteDescription,
+                siteLogo: logoStorageRef.name,
+                siteFavicon: iconStorageRef.name
+            }).catch((error) => {
+                setShowError(true);
+                setMessage('Ayarlar güncellenemedi. Lütfen tekrar deneyin.');
+            });;
+            await uploadBytes(logoStorageRef, siteLogo).catch((error) => {
+                setShowError(true);
+                setMessage('Logo yükleme işlemi başarısız oldu. Lütfen tekrar deneyin.');
             });
-            console.log('Settings saved successfully!');
+            await uploadBytes(iconStorageRef, siteFavicon).catch((error) => {
+                setShowError(true);
+                setMessage('Favicon yükleme işlemi başarısız oldu. Lütfen tekrar deneyin');
+            });
+
+            setShowSuccess(true);
+            setMessage('Ayarlar başarıyla güncellendi.');
         } catch (error) {
-            console.error('Error saving settings:', error);
+            setShowError(true);
+            setMessage('Ayarlar güncellenemedi.');
         }
     };
 
     return (
-        <form method='POST' onSubmit={handleSaveSettings} className="container mx-auto p-4">
+        <form ref={form} method='POST' onSubmit={handleSaveSettings} className="container mx-auto p-4">
             <h1 className="text-2xl text-center text-indigo-600 font-bold mb-4">Site Ayarları</h1>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4">
                 <div className="col-span-full">
                     <label htmlFor="siteTitle" className="block text-sm font-medium text-indigo-500 leading-6">
                         Site Adı/Başlığı
@@ -49,9 +82,9 @@ const AdminSiteSettings = () => {
                     <input
                         type="text"
                         id="siteTitle"
+                        name='siteTitle'
                         className="w-full block p-3 outline-none border border-1 border-gray-300 rounded-md"
-                        value={siteTitle}
-                        onChange={(e) => setSiteTitle(e.target.value)}
+                        defaultValue={siteTitle}
                         required
                     />
                 </div>
@@ -62,10 +95,10 @@ const AdminSiteSettings = () => {
                     <textarea
                         type="text"
                         id="siteDescription"
+                        name='siteDescription'
                         className="w-full block p-3 outline-none border border-1 border-gray-300 rounded-md"
-                        value={siteDescription}
-                        onChange={(e) => setSiteDescription(e.target.value)}
                         rows={4}
+                        defaultValue={siteDescription}
                         required
                     />
                 </div>
@@ -76,8 +109,8 @@ const AdminSiteSettings = () => {
                     <input
                         type="file"
                         id="siteLogo"
+                        name='siteLogo'
                         className="w-full block p-3 outline-none border border-1 border-gray-300 rounded-md"
-                        onChange={(e) => setSiteLogo(e.target.files[0])}
                         required
                     />
                 </div>
@@ -88,8 +121,8 @@ const AdminSiteSettings = () => {
                     <input
                         type="file"
                         id="siteFavicon"
+                        name='siteFavicon'
                         className="w-full block p-3 outline-none border border-1 border-gray-300 rounded-md"
-                        onChange={(e) => setSiteFavicon(e.target.files[0])}
                         required
                     />
                 </div>
@@ -100,6 +133,10 @@ const AdminSiteSettings = () => {
             >
                 Ayarları Kaydet
             </button>
+            <div className='p-4 bg-gray-50'>
+                {showSuccess && <SuccesssNotification message={message} />}
+                {showError && <ErrorNotification message={message} />}
+            </div>
         </form>
     );
 };
