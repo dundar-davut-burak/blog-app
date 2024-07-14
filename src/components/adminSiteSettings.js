@@ -4,10 +4,12 @@ import { db, storage } from '@/database/firebase';
 import { collection, getDocs, doc, updateDoc } from 'firebase/firestore';
 import { ref, uploadBytes } from "firebase/storage";
 import { SuccesssNotification } from './notifications';
+import { useRouter } from 'next/navigation';
 
 const AdminSiteSettings = () => {
 
     const form = useRef();
+    const navigate = useRouter();
     const [showSuccess, setShowSuccess] = useState(false);
     const [showError, setShowError] = useState(false);
     const [message, setMessage] = useState(
@@ -52,19 +54,23 @@ const AdminSiteSettings = () => {
                 siteFavicon: iconStorageRef.name
             }).catch((error) => {
                 setShowError(true);
-                setMessage('Ayarlar güncellenemedi. Lütfen tekrar deneyin.');
+                setMessage('Ayarlar güncellenemedi. Lütfen tekrar deneyin.' + error);
             });;
             await uploadBytes(logoStorageRef, siteLogo).catch((error) => {
                 setShowError(true);
-                setMessage('Logo yükleme işlemi başarısız oldu. Lütfen tekrar deneyin.');
+                setMessage('Logo yükleme işlemi başarısız oldu. Lütfen tekrar deneyin.' + error);
             });
             await uploadBytes(iconStorageRef, siteFavicon).catch((error) => {
                 setShowError(true);
-                setMessage('Favicon yükleme işlemi başarısız oldu. Lütfen tekrar deneyin');
+                setMessage('Favicon yükleme işlemi başarısız oldu. Lütfen tekrar deneyin' + error);
             });
 
             setShowSuccess(true);
             setMessage('Ayarlar başarıyla güncellendi.');
+
+            setTimeout(() => {
+                navigate.refresh();
+            }, 2000);
         } catch (error) {
             setShowError(true);
             setMessage('Ayarlar güncellenemedi.');
