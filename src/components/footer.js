@@ -1,7 +1,13 @@
+"use client"
 import Image from "next/image";
 import Link from "next/link";
+import { useContext } from "react";
+import { AppContext } from "@/context/appContext";
 
 export default function Footer() {
+
+  let { siteTitle, siteLogo } = useContext(AppContext);
+
   return (
     <footer className="text-gray-600 body-font">
       <div className="container px-5 py-8 mx-auto flex items-center sm:flex-row flex-col">
@@ -9,8 +15,8 @@ export default function Footer() {
           href={"/"}
           className="flex title-font font-medium items-center md:justify-start justify-center text-gray-900"
         >
-          <Image alt={"Logo"} src={"/logo.png"} width={64} height={64} />
-          <span className="ml-3 text-xl">Aklımdakiler</span>
+          <Image alt={"Logo"} src={siteLogo ? siteLogo : "/logo.png"} width={64} height={64} />
+          <span className="ml-3 text-xl">{siteTitle}</span>
         </Link>
         <p className="text-sm text-gray-500 sm:ml-4 sm:pl-4 sm:border-l-2 sm:border-gray-200 sm:py-2 sm:mt-0 mt-4">
           © 2024 Creator of this website —
@@ -65,7 +71,7 @@ export default function Footer() {
               "https://tr.linkedin.com/in/bilgehan-kocab%C4%B1y%C4%B1k-bb718230a"
             }
             className="ml-3 text-gray-500 hover:text-indigo-600"
-// Suggested code may be subject to a license. Learn more: ~LicenseLog:956378070.
+            // Suggested code may be subject to a license. Learn more: ~LicenseLog:956378070.
             target="_blank"
             rel="noopener noreferrer"
           >
