@@ -11,6 +11,7 @@ export default function AppContextProvider({ children }) {
     const [siteTitle, setSiteTitle] = useState("");
     const [siteDescription, setSiteDescription] = useState("");
     const [siteKeywords, setSiteKeywords] = useState("");
+    const [siteUrls, setSiteUrls] = useState({});
     const [siteLogo, setSiteLogo] = useState("");
     const [siteFavicon, setSiteFavicon] = useState("");
 
@@ -23,6 +24,11 @@ export default function AppContextProvider({ children }) {
                 setSiteTitle(doc.data().siteTitle);
                 setSiteDescription(doc.data().siteDescription);
                 setSiteKeywords(doc.data().siteKeywords);
+                setSiteUrls({
+                    siteInstagramUrl: doc.data().siteInstagramUrl,
+                    siteTwitterUrl: doc.data().siteTwitterUrl,
+                    siteLinkedinUrl: doc.data().siteLinkedinUrl
+                });
             }
         }).catch((error) => {
             console.log("Error getting document:", error);
@@ -43,7 +49,7 @@ export default function AppContextProvider({ children }) {
     }, []);
 
     return (
-        <AppContext.Provider value={{ siteTitle, siteDescription, siteKeywords, siteLogo, siteFavicon }}>
+        <AppContext.Provider value={{ siteTitle, siteDescription, siteKeywords, siteUrls ,siteLogo, siteFavicon }}>
             {children}
         </AppContext.Provider>
     );

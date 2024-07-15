@@ -19,6 +19,11 @@ const AdminSiteSettings = () => {
     const [siteTitle, setSiteTitle] = useState('');
     const [siteDescription, setSiteDescription] = useState('');
     const [siteKeywords, setSiteKeywords] = useState('');
+    const [siteInstagramUrl, setSiteInstagramUrl] = useState('');
+    const [siteTwitterUrl, setSiteTwitterUrl] = useState('');
+    const [siteLinkedinUrl, setSiteLinkedinUrl] = useState('');
+
+
     const settingsRef = doc(db, 'siteSettings', 'settings');
 
     useEffect(() => {
@@ -30,6 +35,9 @@ const AdminSiteSettings = () => {
                 setSiteTitle(settingsData.siteTitle || '');
                 setSiteDescription(settingsData.siteDescription || '');
                 setSiteKeywords(settingsData.siteKeywords || '');
+                setSiteInstagramUrl(settingsData.siteInstagramUrl || '');
+                setSiteTwitterUrl(settingsData.siteTwitterUrl || '');
+                setSiteLinkedinUrl(settingsData.siteLinkedinUrl || '');
             }
         };
         fetchSettings();
@@ -43,6 +51,9 @@ const AdminSiteSettings = () => {
         const siteTitle = formData.get('siteTitle');
         const siteDescription = formData.get('siteDescription');
         const siteKeywords = formData.get('siteKeywords').split(',');
+        const siteInstagramUrl = formData.get('siteInstagramUrl');
+        const siteTwitterUrl = formData.get('siteTwitterUrl');
+        const siteLinkedinUrl = formData.get('siteLinkedinUrl');
         const siteLogo = formData.get('siteLogo');
         const siteFavicon = formData.get('siteFavicon');
 
@@ -54,6 +65,9 @@ const AdminSiteSettings = () => {
                 siteTitle: siteTitle,
                 siteDescription: siteDescription,
                 siteKeywords: siteKeywords,
+                siteInstagramUrl: siteInstagramUrl,
+                siteTwitterUrl: siteTwitterUrl,
+                siteLinkedinUrl: siteLinkedinUrl,
                 siteLogo: logoStorageRef.name,
                 siteFavicon: iconStorageRef.name
             }).catch((error) => {
@@ -153,6 +167,48 @@ const AdminSiteSettings = () => {
                         required
                     />
                     <p className='text-sm text-gray-400 mt-2'>Sitenizin faviconu seçin.</p>
+                </div>
+                <div className="col-span-full">
+                    <label htmlFor="siteInstagramUrl" className="block text-sm font-medium text-indigo-500 leading-6">
+                        Instagram URL
+                    </label>
+                    <input
+                        type="url"
+                        id="siteInstagramUrl"
+                        name='siteInstagramUrl'
+                        className="w-full block p-3 outline-none border border-1 border-gray-300 rounded-md"
+                        defaultValue={siteInstagramUrl}
+                        required
+                    />
+                    <p className='text-sm text-gray-400 mt-2'>Sitenizin Instagram sayfasının url adresini girin.</p>
+                </div>
+                <div className="col-span-full">
+                    <label htmlFor="siteTwitterUrl" className="block text-sm font-medium text-indigo-500 leading-6">
+                        Twitter URL
+                    </label>
+                    <input
+                        type="url"
+                        id="siteTwitterUrl"
+                        name='siteTwitterUrl'
+                        className="w-full block p-3 outline-none border border-1 border-gray-300 rounded-md"
+                        defaultValue={siteTwitterUrl}
+                        required
+                    />
+                    <p className='text-sm text-gray-400 mt-2'>Sitenizin Instagram sayfasının url adresini girin.</p>
+                </div>
+                <div className="col-span-full">
+                    <label htmlFor="siteLinkedinUrl" className="block text-sm font-medium text-indigo-500 leading-6">
+                        Linkedin URL
+                    </label>
+                    <input
+                        type="url"
+                        id="siteLinkedinUrl"
+                        name='siteLinkedinUrl'
+                        className="w-full block p-3 outline-none border border-1 border-gray-300 rounded-md"
+                        defaultValue={siteLinkedinUrl}
+                        required
+                    />
+                    <p className='text-sm text-gray-400 mt-2'>Sitenizin Instagram sayfasının url adresini girin.</p>
                 </div>
             </div>
             <button

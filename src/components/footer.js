@@ -6,7 +6,7 @@ import { AppContext } from "@/context/appContext";
 
 export default function Footer() {
 
-  let { siteTitle, siteLogo } = useContext(AppContext);
+  let { siteTitle, siteLogo, siteUrls } = useContext(AppContext);
 
   return (
     <footer className="text-gray-600 body-font">
@@ -31,7 +31,7 @@ export default function Footer() {
         </p>
         <span className="inline-flex sm:ml-auto sm:mt-0 mt-4 justify-center sm:justify-start">
           <Link
-            href={"https://instagram.com/19bilgehan38"}
+            href={siteUrls.siteInstagramUrl ? siteUrls.siteInstagramUrl : "#"}
             className="ml-3 text-gray-500 hover:text-indigo-600"
             target="_blank"
             rel="noopener noreferrer"
@@ -50,7 +50,7 @@ export default function Footer() {
             </svg>
           </Link>
           <Link
-            href={"https://twitter.com/18bilgehan81"}
+            href={siteUrls.siteTwitterUrl ? siteUrls.siteTwitterUrl : "#"}
             className="ml-3 text-gray-500 hover:text-indigo-600"
             target="_blank"
             rel="noopener noreferrer"
@@ -67,11 +67,8 @@ export default function Footer() {
             </svg>
           </Link>
           <Link
-            href={
-              "https://tr.linkedin.com/in/bilgehan-kocab%C4%B1y%C4%B1k-bb718230a"
-            }
+            href={siteUrls.siteLinkedinUrl ? siteUrls.siteLinkedinUrl : "#"}
             className="ml-3 text-gray-500 hover:text-indigo-600"
-            // Suggested code may be subject to a license. Learn more: ~LicenseLog:956378070.
             target="_blank"
             rel="noopener noreferrer"
           >
