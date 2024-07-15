@@ -4,10 +4,9 @@ import AdminNavbar from "@/components/adminNavbar";
 import NextBreadcrumb from "@/components/breadcrumb";
 
 export default function AdminLayout({ children }) {
-
   return (
     <AdminContextProvider>
-      <div className={`${screen.width < 481 ? "block" : "flex flex-1"}`}>
+      <div className={`${window.screen.width < 481 ? "block" : "flex flex-1"}`}>
         <AdminNavbar />
         <main className="p-4 w-full">
           <NextBreadcrumb

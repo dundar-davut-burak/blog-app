@@ -144,7 +144,7 @@ export default function UpdateSettings() {
                 <span className="block text-md font-medium leading-6">
                   Parola Sıfırlama
                 </span>
-                <div className="my-2">
+                <div className="my-4">
                   <button
                     type="submit"
                     className="rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-600"
@@ -159,7 +159,7 @@ export default function UpdateSettings() {
                   E-posta Doğrulama
                 </span>
 
-                <div className="my-2">
+                <div className="my-4">
                   <button
                     type="submit"
                     className={`rounded-md shadow-sm px-3 py-2 text-sm font-semibold text-white ${
