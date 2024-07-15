@@ -10,6 +10,7 @@ export const AppContext = createContext();
 export default function AppContextProvider({ children }) {
     const [siteTitle, setSiteTitle] = useState("");
     const [siteDescription, setSiteDescription] = useState("");
+    const [siteKeywords, setSiteKeywords] = useState("");
     const [siteLogo, setSiteLogo] = useState("");
     const [siteFavicon, setSiteFavicon] = useState("");
 
@@ -21,6 +22,7 @@ export default function AppContextProvider({ children }) {
             if (doc.exists()) {
                 setSiteTitle(doc.data().siteTitle);
                 setSiteDescription(doc.data().siteDescription);
+                setSiteKeywords(doc.data().siteKeywords);
             }
         }).catch((error) => {
             console.log("Error getting document:", error);
@@ -41,7 +43,7 @@ export default function AppContextProvider({ children }) {
     }, []);
 
     return (
-        <AppContext.Provider value={{ siteTitle, siteDescription, siteLogo, siteFavicon }}>
+        <AppContext.Provider value={{ siteTitle, siteDescription, siteKeywords, siteLogo, siteFavicon }}>
             {children}
         </AppContext.Provider>
     );

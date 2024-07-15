@@ -6,12 +6,6 @@ import AppContextProvider from "@/context/appContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export const metadata = {
-  title: "Aklımdakiler",
-  description: "Aklımdakiler web sayfası",
-  icon: "../public/favicon.ico",
-};
-
 export default function RootLayout({ children }) {
 
   return (

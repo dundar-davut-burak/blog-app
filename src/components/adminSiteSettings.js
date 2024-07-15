@@ -18,6 +18,7 @@ const AdminSiteSettings = () => {
 
     const [siteTitle, setSiteTitle] = useState('');
     const [siteDescription, setSiteDescription] = useState('');
+    const [siteKeywords, setSiteKeywords] = useState('');
     const settingsRef = doc(db, 'siteSettings', 'settings');
 
     useEffect(() => {
@@ -28,6 +29,7 @@ const AdminSiteSettings = () => {
                 const settingsData = settingsSnapshot.docs[0].data();
                 setSiteTitle(settingsData.siteTitle || '');
                 setSiteDescription(settingsData.siteDescription || '');
+                setSiteKeywords(settingsData.siteKeywords || '');
             }
         };
         fetchSettings();
@@ -40,6 +42,7 @@ const AdminSiteSettings = () => {
         const formData = new FormData(form.current);
         const siteTitle = formData.get('siteTitle');
         const siteDescription = formData.get('siteDescription');
+        const siteKeywords = formData.get('siteKeywords').split(',');
         const siteLogo = formData.get('siteLogo');
         const siteFavicon = formData.get('siteFavicon');
 
@@ -50,6 +53,7 @@ const AdminSiteSettings = () => {
             await updateDoc(settingsRef, {
                 siteTitle: siteTitle,
                 siteDescription: siteDescription,
+                siteKeywords: siteKeywords,
                 siteLogo: logoStorageRef.name,
                 siteFavicon: iconStorageRef.name
             }).catch((error) => {
@@ -93,6 +97,7 @@ const AdminSiteSettings = () => {
                         defaultValue={siteTitle}
                         required
                     />
+                    <p className='text-sm text-gray-400 mt-2'>Sitenizin adını veya başlığını girin.</p>
                 </div>
                 <div className="col-span-full">
                     <label htmlFor="siteDescription" className="block text-sm font-medium text-indigo-500 leading-6">
@@ -107,6 +112,21 @@ const AdminSiteSettings = () => {
                         defaultValue={siteDescription}
                         required
                     />
+                    <p className='text-sm text-gray-400 mt-2'>Sitenizin açıklamasını girin.</p>
+                </div>
+                <div className="col-span-full">
+                    <label htmlFor="siteKeywords" className="block text-sm font-medium text-indigo-500 leading-6">
+                        Site için Anahtar Kelimeler
+                    </label>
+                    <input
+                        type="text"
+                        id="siteKeywords"
+                        name='siteKeywords'
+                        className="w-full block p-3 outline-none border border-1 border-gray-300 rounded-md"
+                        defaultValue={siteKeywords}
+                        required
+                    />
+                    <p className='text-sm text-gray-400 mt-2'>Sitenizin anahtar kelimelerini virgül ile ayırarak girin.</p>
                 </div>
                 <div className="col-span-full">
                     <label htmlFor="siteLogo" className="block text-sm font-medium text-indigo-500 leading-6">
@@ -119,6 +139,7 @@ const AdminSiteSettings = () => {
                         className="w-full block p-3 outline-none border border-1 border-gray-300 rounded-md"
                         required
                     />
+                    <p className='text-sm text-gray-400 mt-2'>Sitenizin logosu seçin.</p>
                 </div>
                 <div className="col-span-full">
                     <label htmlFor="siteFavicon" className="block text-sm font-medium text-indigo-500 leading-6">
@@ -131,6 +152,7 @@ const AdminSiteSettings = () => {
                         className="w-full block p-3 outline-none border border-1 border-gray-300 rounded-md"
                         required
                     />
+                    <p className='text-sm text-gray-400 mt-2'>Sitenizin faviconu seçin.</p>
                 </div>
             </div>
             <button
