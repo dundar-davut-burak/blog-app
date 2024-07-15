@@ -96,7 +96,7 @@ const AdminSiteSettings = () => {
     };
 
     return (
-        <form ref={form} method='POST' onSubmit={handleSaveSettings} className="container mx-auto p-4">
+        <form ref={form} method='POST' onSubmit={handleSaveSettings} className="container mx-auto p-4 mt-10">
             <h1 className="text-2xl text-center text-indigo-600 font-bold mb-4">Site Ayarları</h1>
             <div className="grid grid-cols-1 gap-4">
                 <div className="col-span-full">
