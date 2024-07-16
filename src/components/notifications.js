@@ -1,4 +1,4 @@
-export const SuccesssNotification = ({message}) => {
+export const SuccesssNotification = ({ message }) => {
     const closeNotification = () => {
         document.getElementById("toast-success").style.display = "none";
     }
@@ -22,7 +22,7 @@ export const SuccesssNotification = ({message}) => {
     )
 }
 
-export const ErrorNotification = ({message}) => {
+export const ErrorNotification = ({ message }) => {
     const closeNotification = () => {
         document.getElementById("toast-danger").style.display = "none";
     }
@@ -46,7 +46,7 @@ export const ErrorNotification = ({message}) => {
     )
 }
 
-export const WarningNotification = ({message}) => {
+export const WarningNotification = ({ message }) => {
     const closeNotification = () => {
         document.getElementById("toast-warning").style.display = "none";
     }

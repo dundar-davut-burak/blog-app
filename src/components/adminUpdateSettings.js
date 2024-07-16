@@ -86,7 +86,7 @@ export default function UpdateSettings() {
   };
 
   return (
-    <div className="px-2 sm:px-4 lg:px-6 mx-auto">
+    <div className="px-2 sm:px-4 lg:px-6 mx-auto border-b border-gray-900/10">
       <div className="my-4 p-3">
         {showSuccess && <SuccesssNotification message={message} />}
         {showError && <ErrorNotification message={message} />}
@@ -132,9 +132,8 @@ export default function UpdateSettings() {
               </div>
             </form>
             <div
-              className={`my-2 ${
-                screen.width < 481 ? "block" : "flex items-center"
-              }`}
+              className={`my-2 ${screen.width < 481 ? "block" : "flex items-center"
+                }`}
             >
               <form
                 className="w-full"
@@ -162,11 +161,10 @@ export default function UpdateSettings() {
                 <div className="my-4">
                   <button
                     type="submit"
-                    className={`rounded-md shadow-sm px-3 py-2 text-sm font-semibold text-white ${
-                      auth.currentUser.emailVerified
+                    className={`rounded-md shadow-sm px-3 py-2 text-sm font-semibold text-white ${auth.currentUser.emailVerified
                         ? "bg-green-500"
                         : "bg-indigo-500"
-                    }`}
+                      }`}
                     disabled={auth.currentUser.emailVerified ? true : false}
                   >
                     {auth.currentUser.emailVerified ? (

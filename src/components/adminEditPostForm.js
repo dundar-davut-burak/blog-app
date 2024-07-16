@@ -9,7 +9,6 @@ import { db } from "@/database/firebase";
 import { useParams, useRouter } from "next/navigation";
 import { ErrorNotification, SuccesssNotification } from './notifications';
 
-
 const AdminEditPostForm = () => {
     const form = useRef();
     const [showSuccess, setShowSuccess] = useState(false);
@@ -48,7 +47,7 @@ const AdminEditPostForm = () => {
 
         try {
             const docRef = doc(db, "posts", id);
-            await updateDoc(docRef,{
+            await updateDoc(docRef, {
                 title: form.current.title.value,
                 description: form.current.description.value,
                 content: form.current.content.value,

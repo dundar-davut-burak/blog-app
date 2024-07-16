@@ -225,11 +225,10 @@ export default function PostsTable() {
                 <p className="text-sm text-gray-600">
                   Gönderi Sayısı:{" "}
                   <span
-                    className={`font-semibold ${
-                      docs.length == 0
+                    className={`font-semibold ${docs.length == 0
                         ? "text-red-600 text-lg"
                         : "text-green-600"
-                    }`}
+                      }`}
                   >
                     {docs.length}
                   </span>

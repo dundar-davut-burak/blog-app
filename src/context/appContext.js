@@ -34,13 +34,13 @@ export default function AppContextProvider({ children }) {
             console.log("Error getting document:", error);
         });
 
-        getDownloadURL(ref(storage, 'images/logo.png')).then((url) => {
+        getDownloadURL(ref(storage, 'site-images/logo.png')).then((url) => {
             setSiteLogo(url);
         }).catch((error) => {
             console.log(error);
         });
 
-        getDownloadURL(ref(storage, 'images/logo.ico')).then((url) => {
+        getDownloadURL(ref(storage, 'site-images/favicon.ico')).then((url) => {
             setSiteFavicon(url);
         }).catch((error) => {
             console.log(error);
@@ -49,7 +49,7 @@ export default function AppContextProvider({ children }) {
     }, []);
 
     return (
-        <AppContext.Provider value={{ siteTitle, siteDescription, siteKeywords, siteUrls ,siteLogo, siteFavicon }}>
+        <AppContext.Provider value={{ siteTitle, siteDescription, siteKeywords, siteUrls, siteLogo, siteFavicon }}>
             {children}
         </AppContext.Provider>
     );

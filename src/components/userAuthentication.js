@@ -6,7 +6,6 @@ export default function AdminAuthentication() {
     const form = useRef();
     const [display, setDisplay] = useState("hidden");
 
-
     const Login = (e) => {
         e.preventDefault();
         setDisplay("block");

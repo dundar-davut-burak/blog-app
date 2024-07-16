@@ -57,8 +57,8 @@ const AdminSiteSettings = () => {
         const siteLogo = formData.get('siteLogo');
         const siteFavicon = formData.get('siteFavicon');
 
-        const logoStorageRef = ref(storage, `images/${siteLogo.name}`);
-        const iconStorageRef = ref(storage, `images/${siteFavicon.name}`);
+        const logoStorageRef = ref(storage, `site-images/${siteLogo.name}`);
+        const iconStorageRef = ref(storage, `site-images/${siteFavicon.name}`);
 
         try {
             await updateDoc(settingsRef, {

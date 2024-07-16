@@ -29,6 +29,7 @@ export default function AdminContextProvider({ children }) {
                     emailVerified: user.emailVerified,
                     session: true,
                 });
+
             } else {
                 setAdmin({
                     uid: null,
@@ -40,7 +41,8 @@ export default function AdminContextProvider({ children }) {
                 });
             }
         });
-    });
+
+    }, []);
     return (
         <AdminContext.Provider value={{ admin }}>
             {admin.session ? children : <AdminAuthentication />}

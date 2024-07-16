@@ -8,21 +8,21 @@ import { useContext } from "react";
 
 export default function Home() {
 
-  let {siteTitle, siteDescription, siteKeywords, siteFavicon} = useContext(AppContext)
-  
+  let { siteTitle, siteDescription, siteKeywords, siteFavicon } = useContext(AppContext)
+
   return (
     <>
-    <HeadTag 
-       title={siteTitle} 
-       description={siteDescription}
-       keywords={siteKeywords}
-       icon={siteFavicon}
-    />
-    <main>
-      <Hero />
-      <TopPosts />
-      <LatestPosts />
-    </main>
+      <HeadTag
+        title={siteTitle}
+        description={siteDescription}
+        keywords={siteKeywords}
+        icon={siteFavicon}
+      />
+      <main>
+        <Hero />
+        <TopPosts />
+        <LatestPosts />
+      </main>
     </>
   );
 }
