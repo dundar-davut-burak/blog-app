@@ -10,7 +10,8 @@ const nextConfig = {
     FIREBASE_STORAGE_BUCKET:"aklimdakiler-c15e3.appspot.com",
     FIREBASE_MESSAGING_SENDER_ID:"644182869031",
     FIREBASE_APP_ID:"1:644182869031:web:07c89a908b9bb72ab8ba02",
-    FIREBASE_MEASUREMENT_ID:"G-F7WD38NWTM"
+    FIREBASE_MEASUREMENT_ID:"G-F7WD38NWTM",
+    ADMIN_MAIL_ADRESS:"dundardavutburak@gmail.com"
   },
   images: {
     remotePatterns: [
