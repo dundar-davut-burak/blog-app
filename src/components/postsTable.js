@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { collection, deleteDoc, getDocs, doc } from "firebase/firestore";
+import { collection, deleteDoc, getDocs, doc, query, orderBy } from "firebase/firestore";
 import { db } from "@/database/firebase";
 import { useEffect, useState } from "react";
 import { SuccesssNotification } from "./notifications";
@@ -49,9 +49,9 @@ export default function PostsTable() {
           setShowSuccessNatification(true);
           setTimeout(() => {
             navigate.refresh();
-          }, 1000);
+          }, 2000);
         })
-        .catch((error) => {
+        .catch(() => {
           setShowErrorNatification(true);
         });
     }
@@ -59,7 +59,7 @@ export default function PostsTable() {
   //Getting posts datas from firebase
   const fetchData = async () => {
     try {
-      const querySnapshot = await getDocs(collection(db, "posts"));
+      const querySnapshot = await getDocs(query(collection(db, "posts"), orderBy("date")));
       const data = querySnapshot.docs.map((doc) => ({
         ...doc.data(),
         id: doc.id,

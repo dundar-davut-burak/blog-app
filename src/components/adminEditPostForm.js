@@ -113,7 +113,7 @@ const AdminEditPostForm = () => {
                         title='Lütfen başlık giriniz'
                         minLength={5}
                         maxLength={100}
-                        pattern="[a-zA-ZöçıİğüÖÇĞÜşŞ0-9.,!? ]+"
+                        pattern="[a-zA-ZöçıİğüÖÇĞÜşŞ0-9.,!?: ]+"
                         required
                     />
                     <p className="text-xs text-gray-500 mt-2">Max. 100 karakter</p>
@@ -130,7 +130,7 @@ const AdminEditPostForm = () => {
                         title='Lütfen açıklama giriniz. Max. 300 kelime'
                         minLength={50}
                         maxLength={300}
-                        pattern="[a-zA-ZöçıİğüÖÇĞÜşŞ0-9.,!? ]+"
+                        pattern="[a-zA-ZöçıİğüÖÇĞÜşŞ0-9.,!?: ]+"
                         required
                     >
                     </textarea>
@@ -148,11 +148,11 @@ const AdminEditPostForm = () => {
                         title='Lütfen içerik giriniz'
                         minLength={500}
                         maxLength={3000}
-                        pattern="[a-zA-ZöçıİğüÖÇĞÜşŞ0-9.,!? ]+"
+                        pattern="[a-zA-ZöçıİğüÖÇĞÜşŞ0-9.,!?: ]+"
                         required
                     >
                     </textarea>
-                    <p className="text-xs text-gray-500 mt-2">Min. 500 karakter, Max. 2000 karakter</p>
+                    <p className="text-xs text-gray-500 mt-2">Min. 500 karakter, Max. 3000 karakter</p>
                 </div>
                 <div className="my-3">
                     <label htmlFor="category" className="block text-sm mb-2">Kategori</label>
@@ -183,7 +183,7 @@ const AdminEditPostForm = () => {
                         title="Etiketler (virgül ile ayırın)"
                         minLength={2}
                         maxLength={100}
-                        pattern="[a-zA-ZöçıİğüÖÇĞÜşŞ0-9,]+"
+                        pattern="[a-zA-ZöçıİğüÖÇĞÜşŞ0-9, ]+"
                         required
                     />
                     <p className="text-xs text-gray-500 mt-2">Max. 100 karakter. Virgül den sonra boşluk bırakmayın.</p>

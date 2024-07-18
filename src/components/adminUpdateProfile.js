@@ -45,6 +45,7 @@ export default function UpdateProfile() {
     try {
       const docRef = doc(db, "users", id);
       const formData = new FormData(form.current);
+      const user = auth.currentUser;
       const image = formData.get('photo');
       const storageRef = ref(storage, `/users-images/${user.uid}/${image.name}`);
 
@@ -57,7 +58,6 @@ export default function UpdateProfile() {
         setMessage('Profilim güncellenemedi. Lütfen tekrar deneyin.' + error);
       });
 
-      const user = auth.currentUser;
       await updateProfile(user, {
         displayName: form.current.username.value,
         photoURL: storageRef.name === '' ? data.photo : storageRef.name,
@@ -171,7 +171,7 @@ export default function UpdateProfile() {
                   title="Biyografi"
                   minLength={50}
                   maxLength={300}
-                  pattern="[a-zA-ZöçıİğüÖÇĞÜşŞ0-9.,!? ]+"
+                  pattern="[a-zA-ZöçıİğüÖÇĞÜşŞ0-9.,!?: ]+"
                   required
                 ></textarea>
                 <p className="text-xs text-gray-500 my-2">

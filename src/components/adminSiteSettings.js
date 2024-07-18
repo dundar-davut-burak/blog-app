@@ -154,6 +154,7 @@ const AdminSiteSettings = () => {
                         id="siteLogo"
                         name='siteLogo'
                         className="w-full block p-3 outline-none border border-1 border-gray-300 rounded-md"
+                        accept='image/*'
                     />
                     <p className='text-sm text-gray-400 mt-2'>Sitenizin logosu seçin.</p>
                 </div>
@@ -166,6 +167,7 @@ const AdminSiteSettings = () => {
                         id="siteFavicon"
                         name='siteFavicon'
                         className="w-full block p-3 outline-none border border-1 border-gray-300 rounded-md"
+                        accept='image/*'
                     />
                     <p className='text-sm text-gray-400 mt-2'>Sitenizin faviconu seçin.</p>
                 </div>
