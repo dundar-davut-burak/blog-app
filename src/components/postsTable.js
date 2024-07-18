@@ -19,7 +19,7 @@ export default function PostsTable() {
   const startIndex = lastIndex - nbPerPage;
   const numberOfPages = Math.ceil(docs.length / nbPerPage);
   const records = docs.slice(startIndex, lastIndex);
-
+  //#
   const filtereDocs = records.filter((doc) => {
     if (value == '') {
       return doc
@@ -27,7 +27,15 @@ export default function PostsTable() {
       return doc
     }
   })
+  //#
+  const draftDocs = records.filter((doc) => {
+    if (doc.published == false) {
+      return doc
+    }
+  })
+  //#
   const [isDataReady, setIsDataReady] = useState(false);
+  const [showDraft, setShowDraft] = useState(false);
   const [showSuccessNatification, setShowSuccessNatification] = useState(false);
   const [showErrorNatification, setShowErrorNatification] = useState(false);
 
@@ -54,7 +62,7 @@ export default function PostsTable() {
       const querySnapshot = await getDocs(collection(db, "posts"));
       const data = querySnapshot.docs.map((doc) => ({
         ...doc.data(),
-        id: doc.id, 
+        id: doc.id,
       }));
       setDocs(data);
       setIsDataReady(true);
@@ -67,14 +75,22 @@ export default function PostsTable() {
     fetchData();
   }, []);
   //Pagination functions
-  function nextPage(){
-    if (currentPage != numberOfPages){
-        setCurrentPage( prev => prev + 1)
+  function nextPage() {
+    if (currentPage != numberOfPages) {
+      setCurrentPage(prev => prev + 1)
     }
   }
-  function prevPage(){
-    if (currentPage != 1){
-        setCurrentPage( prev => prev - 1)
+  function prevPage() {
+    if (currentPage != 1) {
+      setCurrentPage(prev => prev - 1)
+    }
+  }
+
+  const td = (showDraft) => {
+    if (showDraft) {
+      return draftDocs
+    } else {
+      return filtereDocs
     }
   }
 
@@ -106,7 +122,8 @@ export default function PostsTable() {
                         setValue(e.target.value);
                       }}
                       className="py-2 px-3 ps-11 block w-full outline-none border border-gray-200 rounded-lg text-sm focus:border-gray-400"
-                      placeholder="Gönderi Ara"
+                      placeholder="Başlığa veya kategoriye göre gönderi Ara"
+                      disabled={showDraft}
                     />
                     <div className="absolute inset-y-0 start-0 flex items-center pointer-events-none ps-4">
                       <svg
@@ -149,6 +166,16 @@ export default function PostsTable() {
                     </svg>
                     Yeni Gönderi
                   </Link>
+                  <button
+                    type="button"
+                    className={`${showDraft ? "bg-green-600 text-white hover:bg-green-700" : "bg-gray-50 text-gray-700 hover:bg-gray-100"
+                      } py-2 px-3 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border`}
+                    onClick={() => {
+                      setShowDraft(!showDraft);
+                    }}
+                  >
+                    Taslaklar
+                  </button>
                 </div>
               </div>
             </div>
@@ -205,13 +232,24 @@ export default function PostsTable() {
                   <th
                     scope="col"
                     className="p-4 text-left text-sm leading-6 font-semibold text-gray-900"
+                  >
+                    <div className="flex items-center gap-x-2">
+                      <span className="text-xs font-semibold uppercase tracking-wide text-gray-800">
+                        Yayınlandı
+                      </span>
+                    </div>
+                  </th>
+
+                  <th
+                    scope="col"
+                    className="p-4 text-left text-sm leading-6 font-semibold text-gray-900"
                   ></th>
                 </tr>
               </thead>
 
               <tbody className="divide-y divide-gray-200 dark:divide-neutral-700">
-                {isDataReady &&
-                  filtereDocs.map((doc) => {
+                {isDataReady && records.length > 0 &&
+                  td(showDraft).map((doc) => {
                     return (
                       <tr key={doc.id}>
                         <td className="p-4 whitespace-nowrap text-sm leading-6 font-medium text-gray-900"></td>
@@ -228,6 +266,11 @@ export default function PostsTable() {
                         <td className="p-4 whitespace-nowrap text-sm leading-6 font-medium text-gray-900">
                           <span className="text-sm text-gray-500">
                             {doc.date}
+                          </span>
+                        </td>
+                        <td className="p-4 whitespace-nowrap text-sm leading-6 font-medium text-gray-900">
+                          <span className="text-sm text-gray-500">
+                            {doc.published ? "Evet" : "Hayır"}
                           </span>
                         </td>
                         <td className="p-4 whitespace-nowrap text-sm leading-6 font-medium text-gray-900">
@@ -251,7 +294,8 @@ export default function PostsTable() {
                         </td>
                       </tr>
                     );
-                  })}
+                  })
+                }
               </tbody>
             </table>
             <div className="px-6 py-4 grid gap-3 md:flex md:justify-between md:items-center border-t border-gray-200">

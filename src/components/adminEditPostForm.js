@@ -5,14 +5,19 @@ import {
     getDoc,
     updateDoc,
 } from "firebase/firestore";
-import { db } from "@/database/firebase";
+import { db, storage } from "@/database/firebase";
+import { ref, uploadBytes } from "firebase/storage";
 import { useParams, useRouter } from "next/navigation";
 import { ErrorNotification, SuccesssNotification } from './notifications';
 
 const AdminEditPostForm = () => {
     const form = useRef();
+
     const [showSuccess, setShowSuccess] = useState(false);
     const [showError, setShowError] = useState(false);
+    const [message, setMessage] = useState(
+        "Bir hata oluştu. Lütfen tekrar deneyin."
+    );
 
     const [post, setPost] = useState({
         title: "",
@@ -53,27 +58,42 @@ const AdminEditPostForm = () => {
                 content: form.current.content.value,
                 category: form.current.category.value,
                 tags: form.current.tags.value.split(','),
-                image: form.current.image.value,
-                published: true
+                image: form.current.image.value === '' ? post.image : form.current.image.value,
+                published: form.current.published.checked,
+            }).catch((error) => {
+                setShowError(true);
+                setMessage('Blog gönderisi güncellenemedi. Lütfen tekrar deneyin.' + error);
             });
 
+            const formData = new FormData(form.current);
+
+            const image = formData.get('image');
+            const storageRef = ref(storage, `posts-images/${image.name}`);
+
+            if(image){
+                await uploadBytes(storageRef, image).catch((error) => {
+                    setShowError(true);
+                    setMessage('Resim yükleme işlemi başarısız oldu. Lütfen tekrar deneyin.' + error);
+                });
+            }
+
             setShowSuccess(true);
-            setShowError(false);
+            setMessage("Blog gönderisi başarıyla güncellendi.");
 
             setTimeout(() => {
                 navigate.push("/admin/blog");
-            }, 3000);
+            }, 2000);
         } catch (error) {
             setShowError(true);
-            setShowSuccess(false);
+            setMessage('Blog gönderisi güncellenemedi.' + error);
         }
     };
 
     return (
         <form className="border rounded-xl shadow-sm" method="POST" onSubmit={handleSubmit} ref={form}>
 
-            {showSuccess && <SuccesssNotification message={"Blog gönderisi başarıyla güncellendi."} />}
-            {showError && <ErrorNotification message={"Bir hata oluştu. Lütfen tekrar deneyin."} />}
+            {showSuccess && <SuccesssNotification message={message} />}
+            {showError && <ErrorNotification message={message} />}
 
             <div className="flex flex-col text-center w-full mt-12 -m-y-4">
                 <h1 className="sm:text-3xl text-2xl font-medium title-font my-3 text-yellow-600">
@@ -171,16 +191,24 @@ const AdminEditPostForm = () => {
                 <div className="my-3">
                     <label htmlFor="image" className="block text-sm mb-2">Resim</label>
                     <input
-                        type="url"
+                        type="file"
                         id="image"
                         name="image"
-                        defaultValue={post.image}
                         className="py-3 px-4 block w-full ring-1 ring-gray-300 rounded-lg text-sm outline-none focus:ring-yellow-500 focus:ring-2"
-                        placeholder="Resim url adresi seçiniz"
-                        title='Resim url adresi seçiniz'
-                        required
+                        placeholder="Gönderinizin için resim dosyası yükleyiniz"
+                        title='Gönderinizin için resim dosyası yükleyiniz'
+                        accept="image/*"
                     />
-                    <p className="text-xs text-gray-500 mt-2">Resim url adresi seçiniz</p>
+                    <p className="text-xs text-gray-500 mt-2">Max. 5mb</p>
+                </div>
+                <div className='my-3 flex items-center'>
+                    <label htmlFor="published" className="text-sm mx-2">Yayına alınsın mı ?</label>
+                    <input
+                        id="published"
+                        name="published"
+                        type="checkbox"
+                        className="form-checkbox h-4 w-4 text-indigo-600"
+                    />
                 </div>
                 <div className="p-2 my-4 w-full">
                     <button
