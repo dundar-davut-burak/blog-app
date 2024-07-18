@@ -23,7 +23,6 @@ const AdminSiteSettings = () => {
     const [siteTwitterUrl, setSiteTwitterUrl] = useState('');
     const [siteLinkedinUrl, setSiteLinkedinUrl] = useState('');
 
-
     const settingsRef = doc(db, 'siteSettings', 'settings');
 
     useEffect(() => {
@@ -57,8 +56,8 @@ const AdminSiteSettings = () => {
         const siteLogo = formData.get('siteLogo');
         const siteFavicon = formData.get('siteFavicon');
 
-        const logoStorageRef = ref(storage, `site-images/${siteLogo.name}`);
-        const iconStorageRef = ref(storage, `site-images/${siteFavicon.name}`);
+        const logoStorageRef = ref(storage, `/site-images/${siteLogo.name}`);
+        const iconStorageRef = ref(storage, `/site-images/${siteFavicon.name}`);
 
         try {
             await updateDoc(settingsRef, {
@@ -68,20 +67,24 @@ const AdminSiteSettings = () => {
                 siteInstagramUrl: siteInstagramUrl,
                 siteTwitterUrl: siteTwitterUrl,
                 siteLinkedinUrl: siteLinkedinUrl,
-                siteLogo: logoStorageRef.name,
-                siteFavicon: iconStorageRef.name
+                siteLogo: logoStorageRef.name === '' ? siteLogo : logoStorageRef.name,
+                siteFavicon: iconStorageRef.name === '' ? siteFavicon : iconStorageRef.name,
             }).catch((error) => {
                 setShowError(true);
                 setMessage('Ayarlar güncellenemedi. Lütfen tekrar deneyin.' + error);
             });;
-            await uploadBytes(logoStorageRef, siteLogo).catch((error) => {
-                setShowError(true);
-                setMessage('Logo yükleme işlemi başarısız oldu. Lütfen tekrar deneyin.' + error);
-            });
-            await uploadBytes(iconStorageRef, siteFavicon).catch((error) => {
-                setShowError(true);
-                setMessage('Favicon yükleme işlemi başarısız oldu. Lütfen tekrar deneyin' + error);
-            });
+            if (siteLogo !== null || siteLogo !== undefined || siteLogo !== '') {
+                await uploadBytes(logoStorageRef, siteLogo).catch((error) => {
+                    setShowError(true);
+                    setMessage('Logo yükleme işlemi başarısız oldu. Lütfen tekrar deneyin.' + error);
+                });
+            }
+            if(siteFavicon !== null || siteFavicon !== undefined || siteFavicon !== ''){
+                await uploadBytes(iconStorageRef, siteFavicon).catch((error) => {
+                    setShowError(true);
+                    setMessage('Favicon yükleme işlemi başarısız oldu. Lütfen tekrar deneyin' + error);
+                });
+            }
 
             setShowSuccess(true);
             setMessage('Ayarlar başarıyla güncellendi.');
@@ -151,7 +154,6 @@ const AdminSiteSettings = () => {
                         id="siteLogo"
                         name='siteLogo'
                         className="w-full block p-3 outline-none border border-1 border-gray-300 rounded-md"
-                        required
                     />
                     <p className='text-sm text-gray-400 mt-2'>Sitenizin logosu seçin.</p>
                 </div>
@@ -164,7 +166,6 @@ const AdminSiteSettings = () => {
                         id="siteFavicon"
                         name='siteFavicon'
                         className="w-full block p-3 outline-none border border-1 border-gray-300 rounded-md"
-                        required
                     />
                     <p className='text-sm text-gray-400 mt-2'>Sitenizin faviconu seçin.</p>
                 </div>

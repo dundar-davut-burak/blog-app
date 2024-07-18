@@ -1,13 +1,13 @@
 "use client";
 import { useRef, useState, useEffect } from "react";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
-import { auth, db } from "@/database/firebase";
+import { auth, db, storage } from "@/database/firebase";
+import { ref, uploadBytes } from "firebase/storage";
 import { ErrorNotification, SuccesssNotification } from "./notifications";
 import { updateProfile } from "firebase/auth";
+import { useRouter } from "next/navigation";
 
 export default function UpdateProfile() {
-  const [showSuccess, setShowSuccess] = useState(false);
-  const [showError, setShowError] = useState(false);
 
   const form = useRef();
   const [data, setData] = useState({
@@ -16,7 +16,14 @@ export default function UpdateProfile() {
     about: "",
   });
 
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [showError, setShowError] = useState(false);
+  const [message, setMessage] = useState(
+    "Bir hata oluştu. Lütfen tekrar deneyin."
+  );
+
   const id = auth.currentUser.uid;
+  const navigate = useRouter();
 
   useEffect(() => {
     const getData = async () => {
@@ -37,23 +44,44 @@ export default function UpdateProfile() {
     e.preventDefault();
     try {
       const docRef = doc(db, "users", id);
+      const formData = new FormData(form.current);
+      const image = formData.get('photo');
+      const storageRef = ref(storage, `/users-images/${user.uid}/${image.name}`);
+
       await updateDoc(docRef, {
         username: form.current.username.value,
-        photo: form.current.photo.value,
+        photo: storageRef.name === '' ? data.photo : storageRef.name,
         about: form.current.about.value,
-      }).catch((error) => alert(error + "\n" + "Bize ulaşın."));
+      }).catch((error) => {
+        setShowError(true);
+        setMessage('Profilim güncellenemedi. Lütfen tekrar deneyin.' + error);
+      });
 
       const user = auth.currentUser;
       await updateProfile(user, {
         displayName: form.current.username.value,
-        photoURL: form.current.photo.value,
-      }).catch((error) => alert(error + "\n" + "Bize ulaşın."));
+        photoURL: storageRef.name === '' ? data.photo : storageRef.name,
+      }).catch((error) => {
+        setShowError(true);
+        setMessage('Profilim güncellenemedi. Lütfen tekrar deneyin.' + error);
+      });
+
+      if (image !== null || image !== undefined || image !== '') {
+        await uploadBytes(storageRef, image).catch((error) => {
+          setShowError(true);
+          setMessage('Resim yükleme işlemi başarısız oldu. Lütfen tekrar deneyin.' + error);
+        });
+      }
 
       setShowSuccess(true);
-      setShowError(false);
+      setMessage("Profilim başarıyla güncellendi.");
+
+      setTimeout(() => {
+        navigate.refresh();
+      }, 2000);
     } catch (error) {
       setShowError(true);
-      setShowSuccess(false);
+      setMessage('Profilim güncellenemedi.' + error);
     }
   };
 
@@ -65,14 +93,8 @@ export default function UpdateProfile() {
       onSubmit={handleSubmit}
     >
       <div className="my-4 p-3">
-        {showSuccess && (
-          <SuccesssNotification message={"Profilim başarıyla güncellendi."} />
-        )}
-        {showError && (
-          <ErrorNotification
-            message={"Bir hata oluştu. Lütfen tekrar deneyin."}
-          />
-        )}
+        {showSuccess && (<SuccesssNotification message={message} />)}
+        {showError && (<ErrorNotification message={message} />)}
       </div>
       <div className="space-y-12">
         <div className="border-b border-gray-900/10">
@@ -120,14 +142,13 @@ export default function UpdateProfile() {
               </label>
               <div className="mt-2 p-2 border border-1 border-gray-300 rounded-md">
                 <input
-                  type="url"
+                  type="file"
                   id="photo"
                   name="photo"
                   className="w-full block py-1.5 outline-none"
                   placeholder="Profil fotoğrafı"
                   title="Profil fotoğrafı"
-                  defaultValue={data.photo}
-                  required
+                  accept="image/*"
                 />
               </div>
             </div>

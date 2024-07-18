@@ -68,9 +68,9 @@ const AdminEditPostForm = () => {
             const formData = new FormData(form.current);
 
             const image = formData.get('image');
-            const storageRef = ref(storage, `posts-images/${image.name}`);
+            const storageRef = ref(storage, `/posts-images/${image.name}`);
 
-            if(image){
+            if (image !== null || image !== undefined || image !== '') {
                 await uploadBytes(storageRef, image).catch((error) => {
                     setShowError(true);
                     setMessage('Resim yükleme işlemi başarısız oldu. Lütfen tekrar deneyin.' + error);

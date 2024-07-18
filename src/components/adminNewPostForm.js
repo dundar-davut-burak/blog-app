@@ -19,6 +19,10 @@ export default function AdminNewPostForm() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        const formData = new FormData(form.current);
+        const image = formData.get('image');
+        const storageRef = ref(storage, `/posts-images/${image.name}`);
+
         try {
             addDoc(collection(db, "posts"), {
                 title: form.current.title.value,
@@ -26,7 +30,7 @@ export default function AdminNewPostForm() {
                 content: form.current.content.value,
                 category: form.current.category.value,
                 tags: form.current.tags.value.split(','),
-                image: form.current.image.value,
+                image: storageRef.name,
                 writer: auth.currentUser.displayName !== null ? auth.currentUser.displayName : auth.currentUser.email,
                 date: new Date().toISOString().split('T')[0],
                 published: form.current.published.checked,
@@ -34,11 +38,6 @@ export default function AdminNewPostForm() {
                 setShowError(true);
                 setMessage('Gönderi yayınlanmadı. Lütfen tekrar deneyin.' + error);
             });
-
-            const formData = new FormData(form.current);
-
-            const image = formData.get('image');
-            const storageRef = ref(storage, `posts-images/${image.name}`);
 
             await uploadBytes(storageRef, image).catch((error) => {
                 setShowError(true);
@@ -174,7 +173,7 @@ export default function AdminNewPostForm() {
                         id="published"
                         name="published"
                         type="checkbox"
-                        className="form-checkbox h-4 w-4 text-indigo-600"                      
+                        className="form-checkbox h-4 w-4 text-indigo-600"
                     />
                 </div>
                 <div className="p-2 my-4 w-full">
