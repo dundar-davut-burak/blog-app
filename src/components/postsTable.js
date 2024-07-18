@@ -8,18 +8,20 @@ import { ErrorNotification } from "./notifications";
 import { useRouter } from "next/navigation";
 
 export default function PostsTable() {
-
+  // Router
   const navigate = useRouter();
+  //Search
   const [value, setValue] = useState('');
+  //Posts
   const [docs, setDocs] = useState([]);
-  //#
+  //Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const nbPerPage = 10;
   const lastIndex = currentPage * nbPerPage;
   const startIndex = lastIndex - nbPerPage;
   const numberOfPages = Math.ceil(docs.length / nbPerPage);
   const records = docs.slice(startIndex, lastIndex);
-  //#
+  //Search
   const filtereDocs = records.filter((doc) => {
     if (value == '') {
       return doc
@@ -27,26 +29,30 @@ export default function PostsTable() {
       return doc
     }
   })
-  //#
+  //Draft
   const draftDocs = records.filter((doc) => {
     if (doc.published == false) {
       return doc
     }
   })
-  //#
+
+  //Check Data Ready
   const [isDataReady, setIsDataReady] = useState(false);
   const [showDraft, setShowDraft] = useState(false);
+  // Notifications
   const [showSuccessNatification, setShowSuccessNatification] = useState(false);
   const [showErrorNatification, setShowErrorNatification] = useState(false);
 
   //Delete article function
   const deleteArticle = (id) => {
+    // Get Document Reference
     const docRef = doc(db, "posts", id);
-
+    //Confirm
     if (confirm("Silmek istediğinize emin misiniz?") == true) {
       deleteDoc(docRef)
         .then(() => {
           setShowSuccessNatification(true);
+          //Refresh page
           setTimeout(() => {
             navigate.refresh();
           }, 2000);
@@ -70,7 +76,7 @@ export default function PostsTable() {
       console.error("Error fetching data:", error);
     }
   }
-  //#
+  //Initial fetch
   useEffect(() => {
     fetchData();
   }, []);
@@ -85,7 +91,7 @@ export default function PostsTable() {
       setCurrentPage(prev => prev - 1)
     }
   }
-
+  //Show draft posts
   const td = (showDraft) => {
     if (showDraft) {
       return draftDocs
@@ -100,6 +106,7 @@ export default function PostsTable() {
         <div className="min-w-full inline-block align-middle">
           <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
             <div className="px-6 py-4 grid gap-3 md:flex md:justify-between md:items-center border-b border-gray-200">
+              {/* Title */}
               <div>
                 <h2 className="text-xl font-semibold text-gray-800">
                   Gönderiler
@@ -110,6 +117,7 @@ export default function PostsTable() {
               </div>
 
               <div className="flex items-center gap-x-2">
+                {/* Search */}
                 <div className="flex items-center gap-x-2">
                   <label htmlFor="search" className="sr-only">Search</label>
                   <div className="relative">
@@ -144,7 +152,9 @@ export default function PostsTable() {
                     </div>
                   </div>
                 </div>
+                {/* Buttons */}
                 <div className="inline-flex gap-x-2">
+                  {/* New Post Button */}
                   <Link
                     className="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700"
                     href="/admin/blog/yeni-gonderi"
@@ -166,6 +176,7 @@ export default function PostsTable() {
                     </svg>
                     Yeni Gönderi
                   </Link>
+                  {/* Show Draft Button */}
                   <button
                     type="button"
                     className={`${showDraft ? "bg-green-600 text-white hover:bg-green-700" : "bg-gray-50 text-gray-700 hover:bg-gray-100"
@@ -179,6 +190,7 @@ export default function PostsTable() {
                 </div>
               </div>
             </div>
+            {/* Notification */}
             <div className="w-full p-3 text-center bg-gray-50">
               {showSuccessNatification && (
                 <SuccesssNotification message="Silme işlemi başarılı" />
@@ -191,11 +203,12 @@ export default function PostsTable() {
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
+                  {/* Empty Space */}
                   <th
                     scope="col"
                     className="p-4 text-left text-sm leading-6 font-semibold text-gray-900"
                   ></th>
-
+                  {/* Title */}
                   <th
                     scope="col"
                     className="p-4 text-left text-sm leading-6 font-semibold text-gray-900"
@@ -206,7 +219,7 @@ export default function PostsTable() {
                       </span>
                     </div>
                   </th>
-
+                  {/* Category */}
                   <th
                     scope="col"
                     className="p-4 text-left text-sm leading-6 font-semibold text-gray-900"
@@ -217,7 +230,7 @@ export default function PostsTable() {
                       </span>
                     </div>
                   </th>
-
+                  {/* Date */}
                   <th
                     scope="col"
                     className="p-4 text-left text-sm leading-6 font-semibold text-gray-900"
@@ -228,7 +241,7 @@ export default function PostsTable() {
                       </span>
                     </div>
                   </th>
-
+                  {/* Published Status */}
                   <th
                     scope="col"
                     className="p-4 text-left text-sm leading-6 font-semibold text-gray-900"
@@ -239,7 +252,7 @@ export default function PostsTable() {
                       </span>
                     </div>
                   </th>
-
+                  {/* Edit and Delete Buttons */}
                   <th
                     scope="col"
                     className="p-4 text-left text-sm leading-6 font-semibold text-gray-900"
@@ -252,35 +265,43 @@ export default function PostsTable() {
                   td(showDraft).map((doc) => {
                     return (
                       <tr key={doc.id}>
+                        {/* Empty Space */}
                         <td className="p-4 whitespace-nowrap text-sm leading-6 font-medium text-gray-900"></td>
+                        {/* Title */}
                         <td className="p-4 whitespace-nowrap text-sm leading-6 font-medium text-gray-900">
                           <span className="block text-sm font-semibold text-gray-800">
                             {doc.title}
                           </span>
                         </td>
+                        {/* Category */}
                         <td className="p-4 whitespace-nowrap text-sm leading-6 font-medium text-gray-900">
                           <span className="block text-sm text-gray-500">
                             {doc.category}
                           </span>
                         </td>
+                        {/* Date */}
                         <td className="p-4 whitespace-nowrap text-sm leading-6 font-medium text-gray-900">
                           <span className="text-sm text-gray-500">
                             {doc.date}
                           </span>
                         </td>
+                        {/* Published Status */}
                         <td className="p-4 whitespace-nowrap text-sm leading-6 font-medium text-gray-900">
                           <span className="text-sm text-gray-500">
                             {doc.published ? "Evet" : "Hayır"}
                           </span>
                         </td>
+                        {/* Edit and Delete Buttons */}
                         <td className="p-4 whitespace-nowrap text-sm leading-6 font-medium text-gray-900">
                           <div className="flex items-center gap-x-3">
+                            {/* Edit Button */}
                             <Link
                               className="inline-flex items-center gap-x-1 text-sm text-white bg-yellow-500 p-1.5 rounded-md shadow-sm decoration-2 hover:bg-yellow-600 font-medium"
                               href={`/admin/blog/${doc.id}`}
                             >
                               Düzenle
                             </Link>
+                            {/* Delete Button */}
                             <button
                               type="button"
                               className="inline-flex items-center gap-x-1 text-sm text-white bg-red-500 p-1.5 rounded-md shadow-sm decoration-2 hover:bg-red-600 font-medium"
@@ -299,6 +320,7 @@ export default function PostsTable() {
               </tbody>
             </table>
             <div className="px-6 py-4 grid gap-3 md:flex md:justify-between md:items-center border-t border-gray-200">
+              {/* Show Total Posts */}
               <div>
                 <p className="text-sm text-gray-600">
                   Gönderi Sayısı:{" "}
@@ -312,6 +334,7 @@ export default function PostsTable() {
                   </span>
                 </p>
               </div>
+              {/* Pagination Buttons */}
               <div className="flex items-center gap-x-2">
                 <span className="text-sm text-gray-600">Şuan {currentPage}. sayfadasınız</span>
                 <button

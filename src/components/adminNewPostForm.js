@@ -7,22 +7,27 @@ import { ErrorNotification, SuccesssNotification } from './notifications';
 import { useRouter } from "next/navigation";
 
 export default function AdminNewPostForm() {
+    // using Form Ref for get values
     const form = useRef();
+    // Router
     const navigate = useRouter();
 
+    // Notifications states
     const [showSuccess, setShowSuccess] = useState(false);
     const [showError, setShowError] = useState(false);
     const [message, setMessage] = useState(
         "Bir hata oluştu. Lütfen tekrar deneyin."
     );
 
+    // Handle Submit
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+        // get image from form and create storage reference
         const formData = new FormData(form.current);
         const image = formData.get('image');
         const storageRef = ref(storage, `/posts-images/${image.name}`);
 
+        // Add Post
         try {
             addDoc(collection(db, "posts"), {
                 title: form.current.title.value,
@@ -38,20 +43,21 @@ export default function AdminNewPostForm() {
                 setShowError(true);
                 setMessage('Gönderi yayınlanmadı. Lütfen tekrar deneyin.' + error);
             });
-
+            // Upload Image
             await uploadBytes(storageRef, image).catch((error) => {
                 setShowError(true);
                 setMessage('Resim yükleme işlemi başarısız oldu. Lütfen tekrar deneyin.' + error);
             });
-
+            // Show Success Message
             setShowSuccess(true);
             setMessage('Gönderi yayınlandı.');
-
+            // Redirect to Admin Dashboard
             setTimeout(() => {
                 navigate.push("/admin/blog");
             }, 2000);
 
         } catch (error) {
+            // Show Error Message
             setShowError(true);
             setMessage('Gönderi yayınlanmadı.' + error);
         }
@@ -60,15 +66,16 @@ export default function AdminNewPostForm() {
 
     return (
         <form className="border rounded-xl shadow-sm" method="POST" onSubmit={handleSubmit} ref={form}>
-
+            {/* Notifications */}
             {showSuccess && <SuccesssNotification message={message} />}
             {showError && <ErrorNotification message={message} />}
-
+            {/* Admin New Post Form Title */}
             <div className="flex flex-col text-center w-full mt-12 -m-y-4">
                 <h1 className="sm:text-3xl text-2xl font-medium title-font my-3 text-indigo-600">
                     Yeni Blog Gönderisi Yayınla
                 </h1>
             </div>
+            {/* Admin New Post Form */}
             <div className="flex flex-col px-6 py-4">
                 <div className='my-3'>
                     <label htmlFor="title" className="block text-sm mb-2">Başlık</label>

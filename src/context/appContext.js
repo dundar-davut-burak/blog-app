@@ -8,6 +8,7 @@ import { ref, getDownloadURL } from "firebase/storage";
 export const AppContext = createContext();
 
 export default function AppContextProvider({ children }) {
+    // Site Settings
     const [siteTitle, setSiteTitle] = useState("");
     const [siteDescription, setSiteDescription] = useState("");
     const [siteKeywords, setSiteKeywords] = useState("");
@@ -15,10 +16,12 @@ export default function AppContextProvider({ children }) {
     const [siteLogo, setSiteLogo] = useState("");
     const [siteFavicon, setSiteFavicon] = useState("");
 
+    // Get Site Settings
     useEffect(() => {
+        // Get Site Settings from Firestore
         const docRef = doc(db, "siteSettings", "settings");
         const docSnap = getDoc(docRef);
-
+        // Set Site Settings to States
         docSnap.then((doc) => {
             if (doc.exists()) {
                 setSiteTitle(doc.data().siteTitle);
@@ -33,13 +36,12 @@ export default function AppContextProvider({ children }) {
         }).catch((error) => {
             console.log("Error getting document:", error);
         });
-
+        // Get Site Logo and Favicon
         getDownloadURL(ref(storage, 'site-images/logo.png')).then((url) => {
             setSiteLogo(url);
         }).catch((error) => {
             console.log(error);
         });
-
         getDownloadURL(ref(storage, 'site-images/favicon.ico')).then((url) => {
             setSiteFavicon(url);
         }).catch((error) => {

@@ -6,9 +6,11 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { AdminContext } from "@/context/adminContext";
 
 export default function AdminAuthentication() {
-
+    // using Form Ref for get values
     const form = useRef();
+    // Admin Context
     let { setAdmin } = useContext(AdminContext);
+    // Error States
     const [emailErrordisplay, setEmailError] = useState("hidden");
     const [passwordError, setPasswordError] = useState("hidden");
 
@@ -27,16 +29,16 @@ export default function AdminAuthentication() {
             try {
                 signInWithEmailAndPassword(auth, form.current.email.value, form.current.password.value)
                     .then((userCredential) => {
+                        // Signed in
                         const admin = userCredential.user;
                         setAdmin(admin, admin.session = true);
                     })
                     .catch((error) => {
-                        setPasswordError("block");
-                        const errorCode = error.code;
-                        const errorMessage = error.message;
-                        console.log(errorCode, errorMessage);
+                        //Handle Errors
+                        setPasswordError("block" + error);
                     });
             } catch (error) {
+                // An error happened.
                 console.log(error);
             }
         }
@@ -45,10 +47,12 @@ export default function AdminAuthentication() {
     return (
         <section className="w-5/6 sm:w-3/4 md:w-1/2 lg:w-1/3 mx-auto my-10 border rounded-xl shadow-sm">
             <div className="p-5">
+                {/* Admin Login Panel Title */}
                 <div className="text-center">
                     <h1 className="block text-2xl font-bold text-gray-800">Admin Paneli</h1>
                 </div>
                 <div className="mt-5">
+                    {/* Admin Login Form */}
                     <form ref={form} method="POST" onSubmit={Login}>
                         <div className="grid gap-y-4">
                             <div>

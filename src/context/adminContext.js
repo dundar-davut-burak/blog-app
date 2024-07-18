@@ -8,6 +8,7 @@ import AdminAuthentication from "@/components/adminAuthentication";
 export const AdminContext = createContext();
 
 export default function AdminContextProvider({ children }) {
+    // Datas of Admin
     const [admin, setAdmin] = useState({
         uid: null,
         email: null,
@@ -16,9 +17,9 @@ export default function AdminContextProvider({ children }) {
         emailVerified: null,
         session: false,
     });
-
+    // Get Admin Datas
     useEffect(() => {
-        // Update the document title using the browser API
+        // Get Admin Datas
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 setAdmin({

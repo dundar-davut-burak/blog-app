@@ -11,14 +11,17 @@ import { useParams, useRouter } from "next/navigation";
 import { ErrorNotification, SuccesssNotification } from './notifications';
 
 const AdminEditPostForm = () => {
+    // using Form Ref for get values
     const form = useRef();
 
+    // Notifications states
     const [showSuccess, setShowSuccess] = useState(false);
     const [showError, setShowError] = useState(false);
     const [message, setMessage] = useState(
         "Bir hata oluştu. Lütfen tekrar deneyin."
     );
 
+    // Post State
     const [post, setPost] = useState({
         title: "",
         description: "",
@@ -29,9 +32,12 @@ const AdminEditPostForm = () => {
         published: true
     });
 
+    // Get Post ID
     const { id } = useParams();
+    // Router
     const navigate = useRouter();
 
+    // Get Post
     useEffect(() => {
         const getPost = async () => {
             const docRef = doc(db, "posts", id);
@@ -47,9 +53,10 @@ const AdminEditPostForm = () => {
         getPost();
     }, [id]);
 
+    // Handle Submit
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+        // Update Post
         try {
             const docRef = doc(db, "posts", id);
             await updateDoc(docRef, {
@@ -61,15 +68,16 @@ const AdminEditPostForm = () => {
                 image: form.current.image.value === '' ? post.image : form.current.image.value,
                 published: form.current.published.checked,
             }).catch((error) => {
+                // Show Error Message
                 setShowError(true);
                 setMessage('Blog gönderisi güncellenemedi. Lütfen tekrar deneyin.' + error);
             });
-
+            // get image from form and create storage reference
             const formData = new FormData(form.current);
-
             const image = formData.get('image');
             const storageRef = ref(storage, `/posts-images/${image.name}`);
 
+            // Upload Image
             if (image !== null || image !== undefined || image !== '') {
                 await uploadBytes(storageRef, image).catch((error) => {
                     setShowError(true);
@@ -77,13 +85,15 @@ const AdminEditPostForm = () => {
                 });
             }
 
+            // Show Success Message
             setShowSuccess(true);
             setMessage("Blog gönderisi başarıyla güncellendi.");
-
+            // Redirect to Admin Dashboard
             setTimeout(() => {
                 navigate.push("/admin/blog");
             }, 2000);
         } catch (error) {
+            // Show Error Message
             setShowError(true);
             setMessage('Blog gönderisi güncellenemedi.' + error);
         }
@@ -91,15 +101,16 @@ const AdminEditPostForm = () => {
 
     return (
         <form className="border rounded-xl shadow-sm" method="POST" onSubmit={handleSubmit} ref={form}>
-
+            {/* Notifications */}
             {showSuccess && <SuccesssNotification message={message} />}
             {showError && <ErrorNotification message={message} />}
-
+            {/* Admin Edit Post Form Title */}
             <div className="flex flex-col text-center w-full mt-12 -m-y-4">
                 <h1 className="sm:text-3xl text-2xl font-medium title-font my-3 text-yellow-600">
                     Blog Gönderinizi Güncelleyin
                 </h1>
             </div>
+            {/* Admin Edit Post Form */}
             <div className="flex flex-col px-6 py-4">
                 <div className='my-3'>
                     <label htmlFor="title" className="block text-sm mb-2">Başlık</label>

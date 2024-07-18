@@ -7,24 +7,26 @@ import { SuccesssNotification } from './notifications';
 import { useRouter } from 'next/navigation';
 
 const AdminSiteSettings = () => {
-
+    // using Form Ref for get values
     const form = useRef();
+    // Router
     const navigate = useRouter();
+    // Notifications states
     const [showSuccess, setShowSuccess] = useState(false);
     const [showError, setShowError] = useState(false);
     const [message, setMessage] = useState(
         "Bir hata oluştu. Lütfen tekrar deneyin."
     );
-
+    // Site Settings
     const [siteTitle, setSiteTitle] = useState('');
     const [siteDescription, setSiteDescription] = useState('');
     const [siteKeywords, setSiteKeywords] = useState('');
     const [siteInstagramUrl, setSiteInstagramUrl] = useState('');
     const [siteTwitterUrl, setSiteTwitterUrl] = useState('');
     const [siteLinkedinUrl, setSiteLinkedinUrl] = useState('');
-
+    // Get Site Settings
     const settingsRef = doc(db, 'siteSettings', 'settings');
-
+    // Get Site Settings
     useEffect(() => {
         const fetchSettings = async () => {
             const settingsRef = collection(db, 'siteSettings');
@@ -45,8 +47,9 @@ const AdminSiteSettings = () => {
     const handleSaveSettings = async (e) => {
 
         e.preventDefault();
-
+        // Get Form Data
         const formData = new FormData(form.current);
+        // Get Form Values
         const siteTitle = formData.get('siteTitle');
         const siteDescription = formData.get('siteDescription');
         const siteKeywords = formData.get('siteKeywords').split(',');
@@ -55,10 +58,11 @@ const AdminSiteSettings = () => {
         const siteLinkedinUrl = formData.get('siteLinkedinUrl');
         const siteLogo = formData.get('siteLogo');
         const siteFavicon = formData.get('siteFavicon');
-
+        // Create Storage References
         const logoStorageRef = ref(storage, `/site-images/${siteLogo.name}`);
         const iconStorageRef = ref(storage, `/site-images/${siteFavicon.name}`);
 
+        // Update Site Settings
         try {
             await updateDoc(settingsRef, {
                 siteTitle: siteTitle,
@@ -72,27 +76,29 @@ const AdminSiteSettings = () => {
             }).catch((error) => {
                 setShowError(true);
                 setMessage('Ayarlar güncellenemedi. Lütfen tekrar deneyin.' + error);
-            });;
+            });
+            // get image from form and create storage reference
             if (siteLogo !== null || siteLogo !== undefined || siteLogo !== '') {
                 await uploadBytes(logoStorageRef, siteLogo).catch((error) => {
                     setShowError(true);
                     setMessage('Logo yükleme işlemi başarısız oldu. Lütfen tekrar deneyin.' + error);
                 });
             }
-            if(siteFavicon !== null || siteFavicon !== undefined || siteFavicon !== ''){
+            if (siteFavicon !== null || siteFavicon !== undefined || siteFavicon !== '') {
                 await uploadBytes(iconStorageRef, siteFavicon).catch((error) => {
                     setShowError(true);
                     setMessage('Favicon yükleme işlemi başarısız oldu. Lütfen tekrar deneyin' + error);
                 });
             }
-
+            // Show Success Message
             setShowSuccess(true);
             setMessage('Ayarlar başarıyla güncellendi.');
-
+            // Redirect to Admin Dashboard
             setTimeout(() => {
                 navigate.refresh();
             }, 2000);
         } catch (error) {
+            // Show Error Message
             setShowError(true);
             setMessage('Ayarlar güncellenemedi.');
         }
@@ -100,7 +106,9 @@ const AdminSiteSettings = () => {
 
     return (
         <form ref={form} method='POST' onSubmit={handleSaveSettings} className="container mx-auto p-4 mt-10">
+            {/* Admin Site Settings Title */}
             <h1 className="text-2xl text-center text-indigo-600 font-bold mb-4">Site Ayarları</h1>
+            {/* Site Settings Form */}
             <div className="grid grid-cols-1 gap-4">
                 <div className="col-span-full">
                     <label htmlFor="siteTitle" className="block text-sm font-medium text-indigo-500 leading-6">
@@ -220,6 +228,7 @@ const AdminSiteSettings = () => {
             >
                 Ayarları Kaydet
             </button>
+            {/* Notifications */}
             <div className='p-4 bg-gray-50'>
                 {showSuccess && <SuccesssNotification message={message} />}
                 {showError && <ErrorNotification message={message} />}

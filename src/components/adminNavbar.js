@@ -7,13 +7,15 @@ import { useContext, useState } from "react";
 import { ErrorNotification } from "./notifications";
 
 export default function AdminNavbar() {
+  // Admin Context
   let { setAdmin } = useContext(AdminContext);
+  // Notification State
   const [showNotification, setShowNotification] = useState(false);
 
+  // SignOut
   const signOutF = () => {
     signOut(auth)
       .then(() => {
-        // Sign-out successful.
         setAdmin({
           uid: null,
           email: null,
@@ -32,9 +34,11 @@ export default function AdminNavbar() {
 
   return (
     <nav className="flex flex-col flex-2 p-4">
+      {/* Admin navbar Brand */}
       <div className="space-y-4 mb-5">
         <h5 className="px-3 py-4 text-lg font-bold text-gray-900">Menü</h5>
       </div>
+      {/* Admin Navbar */}
       <div className="space-y-4">
         <div className="group">
           <Link
@@ -135,11 +139,14 @@ export default function AdminNavbar() {
           </Link>
         </div>
       </div>
+      {/* Error Notification for SignOut */}
       {showNotification ? (
         <ErrorNotification message={"Çıkış yapılamadı"} />
       ) : (
         <></>
       )}
+      <hr className="border-gray-200" />
+      {/* SignOut Button */}
       <div className="pt-4">
         <button
           onClick={signOutF}
