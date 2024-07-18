@@ -23,7 +23,7 @@ export default function PostsTable() {
   const filtereDocs = records.filter((doc) => {
     if (value == '') {
       return doc
-    } else if (doc.title.toLowerCase().includes(value.toLowerCase() || doc.category.toLowerCase().includes(value.toLowerCase()))) {
+    } else if (doc.title.toLowerCase().includes(value.toLowerCase()) || doc.category.toLowerCase().includes(value.toLowerCase())) {
       return doc
     }
   })
