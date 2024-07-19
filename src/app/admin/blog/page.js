@@ -1,9 +1,5 @@
-import PostsTable from "@/components/postsTable";
+import Table from "@/components/admin_components/blog_components/table";
 
 export default function AdminBlogPage() {
-    return (
-        <section>
-            <PostsTable />
-        </section>
-    )
+    return <Table />
 }

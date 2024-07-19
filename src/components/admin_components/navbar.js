@@ -1,16 +1,17 @@
 "use client";
+import { AppContext } from "@/context/appContext";
 import { AdminContext } from "@/context/adminContext";
 import { auth } from "@/database/firebase";
 import { signOut } from "firebase/auth";
 import Link from "next/link";
-import { useContext, useState } from "react";
-import { ErrorNotification } from "./notifications";
+import { useContext } from "react";
+import { ErrorNotification } from "@/components/notifications";
 
-export default function AdminNavbar() {
+export default function Navbar() {
   // Admin Context
   let { setAdmin } = useContext(AdminContext);
   // Notification State
-  const [showNotification, setShowNotification] = useState(false);
+  let { showErrorNotification, setShowErrorNotification, setMessageNotification } = useContext(AppContext);
 
   // SignOut
   const signOutF = () => {
@@ -27,7 +28,8 @@ export default function AdminNavbar() {
       })
       .catch((error) => {
         // An error happened.
-        setShowNotification(true);
+        setShowErrorNotification(true);
+        setMessageNotification("Çıkış yapılamadı. Lütfen tekrar deneyin.");
         console.log(error);
       });
   };
@@ -140,8 +142,8 @@ export default function AdminNavbar() {
         </div>
       </div>
       {/* Error Notification for SignOut */}
-      {showNotification ? (
-        <ErrorNotification message={"Çıkış yapılamadı"} />
+      {showErrorNotification ? (
+        <ErrorNotification />
       ) : (
         <></>
       )}

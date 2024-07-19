@@ -1,11 +1,15 @@
-import Settings from "@/components/adminUpdateSettings";
-import AdminSiteSettings from "@/components/adminSiteSettings";
+import AccountSettings from "@/components/admin_components/settings_components/accountSettings";
+import SiteSettings from "@/components/admin_components/settings_components/siteSettings";
 
 export default function SettingsPage() {
   return (
-    <section>
-      <Settings />
-      <AdminSiteSettings />
-    </section>
+    <>
+      <section>
+        <AccountSettings />
+      </section>
+      <section>
+        <SiteSettings />
+      </section>
+    </>
   );
 }

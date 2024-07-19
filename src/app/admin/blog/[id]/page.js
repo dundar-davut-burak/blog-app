@@ -1,9 +1,5 @@
-import AdminEditPostForm from "@/components/adminEditPostForm";
+import EditForm from "@/components/admin_components/blog_components/editForm";
 
-export default function EditPost() {
-    return (
-        <section>
-            <AdminEditPostForm />
-        </section>
-    )
+export default function EditPostPage() {
+    return <EditForm />
 }

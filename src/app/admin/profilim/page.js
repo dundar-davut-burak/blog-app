@@ -1,10 +1,5 @@
-import UpdateProfile from "@/components/adminUpdateProfile";
+import ProfileSettings from "@/components/admin_components/profile_components/updateProfileSettings";
 
-export default function MyProfile() {
-
-    return (
-        <section>
-            <UpdateProfile />
-        </section>
-    )
+export default function MyProfilePage() {
+    return <ProfileSettings />
 }

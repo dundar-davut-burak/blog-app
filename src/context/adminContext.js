@@ -3,7 +3,7 @@ import { createContext } from "react";
 import { useEffect, useState } from "react";
 import { auth } from "@/database/firebase";
 import { onAuthStateChanged } from "firebase/auth";
-import AdminAuthentication from "@/components/adminAuthentication";
+import AdminAuthentication from "@/components/admin_components/authentication";
 
 export const AdminContext = createContext();
 

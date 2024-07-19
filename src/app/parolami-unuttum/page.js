@@ -1,9 +1,10 @@
 "use client";
-import { useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import { auth } from "@/database/firebase";
 import { sendPasswordResetEmail } from "firebase/auth";
 import { SuccesssNotification } from "@/components/notifications";
 import { useRouter } from "next/navigation";
+import { AppContext } from "@/context/appContext";
 
 export default function ForgotPasswordPage() {
   const navigate = useRouter();
@@ -14,7 +15,7 @@ export default function ForgotPasswordPage() {
 
   const form = useRef();
   const [display, setDisplay] = useState("hidden");
-  const [showNotification, setShowNotification] = useState(false);
+  let { showSuccessNotification, setShowSuccessNotification, setMessageNotification } = useContext(AppContext);
 
   const sendEmail = (e) => {
     e.preventDefault();
@@ -24,7 +25,8 @@ export default function ForgotPasswordPage() {
       .then(() => {
         // Password reset email sent!
         setDisplay("hidden");
-        setShowNotification(true);
+        setShowSuccessNotification(true);
+        setMessageNotification("Parolanızı sıfırlamak için e-posta adresinize bir link gönderdik");
       })
       .catch((error) => {
         setDisplay("block");
@@ -37,7 +39,7 @@ export default function ForgotPasswordPage() {
 
   return (
     <section className="w-5/6 sm:w-3/4 md:w-1/2 lg:w-1/3 mx-auto my-16 border rounded-xl shadow-sm">
-      {showNotification ? (
+      {showSuccessNotification ? (
         <SuccesssNotification
           message={
             "Parolanızı sıfırlamak için e-posta adresinize bir link gönderdik"

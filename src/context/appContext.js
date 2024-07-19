@@ -15,6 +15,10 @@ export default function AppContextProvider({ children }) {
     const [siteUrls, setSiteUrls] = useState({});
     const [siteLogo, setSiteLogo] = useState("");
     const [siteFavicon, setSiteFavicon] = useState("");
+    const [notificationMessage, setMessageNotification] = useState("");
+    const [showSuccessNotification, setShowSuccessNotification] = useState(false);
+    const [showErrorNotification, setShowErrorNotification] = useState(false);
+    const [showWarningNotification, setShowWarningNotification] = useState(false);
 
     // Get Site Settings
     useEffect(() => {
@@ -51,7 +55,21 @@ export default function AppContextProvider({ children }) {
     }, []);
 
     return (
-        <AppContext.Provider value={{ siteTitle, siteDescription, siteKeywords, siteUrls, siteLogo, siteFavicon }}>
+        <AppContext.Provider value={{
+            siteTitle,
+            siteDescription,
+            siteKeywords,
+            siteUrls, siteLogo,
+            siteFavicon,
+            notificationMessage,
+            setMessageNotification,
+            showSuccessNotification,
+            setShowSuccessNotification,
+            showErrorNotification,
+            setShowErrorNotification,
+            showWarningNotification,
+            setShowWarningNotification
+        }}>
             {children}
         </AppContext.Provider>
     );

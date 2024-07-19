@@ -6,7 +6,7 @@ import TopPosts from "@/components/topPosts";
 import { AppContext } from "@/context/appContext";
 import { useContext } from "react";
 
-export default function Home() {
+export default function HomePage() {
 
   let { siteTitle, siteDescription, siteKeywords, siteFavicon } = useContext(AppContext)
 

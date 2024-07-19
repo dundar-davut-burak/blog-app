@@ -1,81 +1,24 @@
 "use client"
-import { useRef, useState } from 'react';
-import { auth, db, storage } from '@/database/firebase';
-import { collection, addDoc } from "firebase/firestore";
-import { ref, uploadBytes } from "firebase/storage";
-import { ErrorNotification, SuccesssNotification } from './notifications';
-import { useRouter } from "next/navigation";
+import { ErrorNotification, SuccesssNotification } from '@/components/notifications';
+import { AppContext } from '@/context/appContext';
+import { useContext } from 'react';
 
-export default function AdminNewPostForm() {
-    // using Form Ref for get values
-    const form = useRef();
-    // Router
-    const navigate = useRouter();
+export default function PostForm({ handleSubmit, refForm, formTitle, title, description, content, category, tags, image, published, buttonValue, isRequired }) {
 
-    // Notifications states
-    const [showSuccess, setShowSuccess] = useState(false);
-    const [showError, setShowError] = useState(false);
-    const [message, setMessage] = useState(
-        "Bir hata oluştu. Lütfen tekrar deneyin."
-    );
-
-    // Handle Submit
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        // get image from form and create storage reference
-        const formData = new FormData(form.current);
-        const image = formData.get('image');
-        const storageRef = ref(storage, `/posts-images/${image.name}`);
-
-        // Add Post
-        try {
-            addDoc(collection(db, "posts"), {
-                title: form.current.title.value,
-                description: form.current.description.value,
-                content: form.current.content.value,
-                category: form.current.category.value,
-                tags: form.current.tags.value.split(','),
-                image: storageRef.name,
-                writer: auth.currentUser.displayName !== null ? auth.currentUser.displayName : auth.currentUser.email,
-                date: new Date().toISOString().split('T')[0],
-                published: form.current.published.checked,
-            }).catch((error) => {
-                setShowError(true);
-                setMessage('Gönderi yayınlanmadı. Lütfen tekrar deneyin.' + error);
-            });
-            // Upload Image
-            await uploadBytes(storageRef, image).catch((error) => {
-                setShowError(true);
-                setMessage('Resim yükleme işlemi başarısız oldu. Lütfen tekrar deneyin.' + error);
-            });
-            // Show Success Message
-            setShowSuccess(true);
-            setMessage('Gönderi yayınlandı.');
-            // Redirect to Admin Dashboard
-            setTimeout(() => {
-                navigate.push("/admin/blog");
-            }, 2000);
-
-        } catch (error) {
-            // Show Error Message
-            setShowError(true);
-            setMessage('Gönderi yayınlanmadı.' + error);
-        }
-
-    }
+    let { showSuccessNotification, showErrorNotification } = useContext(AppContext);
 
     return (
-        <form className="border rounded-xl shadow-sm" method="POST" onSubmit={handleSubmit} ref={form}>
+        <form className="border rounded-xl shadow-sm" method="POST" onSubmit={handleSubmit} ref={refForm}>
             {/* Notifications */}
-            {showSuccess && <SuccesssNotification message={message} />}
-            {showError && <ErrorNotification message={message} />}
+            {showSuccessNotification && <SuccesssNotification />}
+            {showErrorNotification && <ErrorNotification />}
             {/* Admin New Post Form Title */}
             <div className="flex flex-col text-center w-full mt-12 -m-y-4">
                 <h1 className="sm:text-3xl text-2xl font-medium title-font my-3 text-indigo-600">
-                    Yeni Blog Gönderisi Yayınla
+                    {formTitle}
                 </h1>
             </div>
-            {/* Admin New Post Form */}
+            {/* Post Form */}
             <div className="flex flex-col px-6 py-4">
                 <div className='my-3'>
                     <label htmlFor="title" className="block text-sm mb-2">Başlık</label>
@@ -83,12 +26,12 @@ export default function AdminNewPostForm() {
                         type="text"
                         id="title"
                         name="title"
+                        defaultValue={title}
                         className="py-3 px-4 block w-full ring-1 ring-gray-300 rounded-lg text-sm outline-none focus:ring-indigo-500 focus:ring-2"
                         placeholder="Lütfen başlık giriniz"
                         title='Lütfen başlık giriniz'
-                        minLength={5}
-                        maxLength={100}
-                        pattern="[a-zA-ZöçıİğüÖÇĞÜşŞ0-9.,!?: ]+"
+                        maxLength={120}
+                        pattern="[a-zA-ZöçıİğüÖÇĞÜşŞ0-9.,!?:' ]+"
                         required
                     />
                     <p className="text-xs text-gray-500 mt-2">Max. 100 karakter</p>
@@ -98,50 +41,51 @@ export default function AdminNewPostForm() {
                     <textarea
                         id="description"
                         name="description"
+                        defaultValue={description}
                         rows={3}
                         className="py-3 px-4 block w-full ring-1 ring-gray-300 rounded-lg text-sm outline-none focus:ring-indigo-500 focus:ring-2"
                         placeholder="Lütfen açıklama giriniz. Max. 300 kelime"
                         title='Lütfen açıklama giriniz. Max. 300 kelime'
-                        minLength={50}
-                        maxLength={300}
-                        pattern="[a-zA-ZöçıİğüÖÇĞÜşŞ0-9.,!?: ]+"
+                        maxLength={500}
+                        pattern="[a-zA-ZöçıİğüÖÇĞÜşŞ0-9.,!?:' ]+"
                         required
                     >
                     </textarea>
-                    <p className="text-xs text-gray-500 mt-2">Max. 300 kelime</p>
+                    <p className="text-xs text-gray-500 mt-2">Max. 500 kelime</p>
                 </div>
                 <div className='my-3'>
                     <label htmlFor="content" className="block text-sm mb-2">İçerik</label>
                     <textarea
                         id="content"
                         name="content"
+                        defaultValue={content}
                         rows={20}
                         className="py-3 px-4 block w-full ring-1 ring-gray-300 rounded-lg text-sm outline-none focus:ring-indigo-500 focus:ring-2"
                         placeholder="Lütfen içerik giriniz"
                         title='Lütfen içerik giriniz'
                         minLength={500}
-                        maxLength={3000}
-                        pattern="[a-zA-ZöçıİğüÖÇĞÜşŞ0-9.,!?: ]+"
+                        maxLength={5000}
+                        pattern="[a-zA-ZöçıİğüÖÇĞÜşŞ0-9.,!?:' ]+"
                         required
                     >
                     </textarea>
-                    <p className="text-xs text-gray-500 mt-2">Min. 500 karakter, Max. 3000 karakter</p>
+                    <p className="text-xs text-gray-500 mt-2">Min. 500 karakter, Max. 5000 karakter</p>
                 </div>
                 <div className="my-3">
                     <label htmlFor="category" className="block text-sm mb-2">Kategori</label>
                     <select
                         id="category"
                         name="category"
+                        defaultValue={category}
                         className="py-3 px-4 block w-full ring-1 ring-gray-300 rounded-lg text-sm outline-none focus:ring-indigo-500 focus:ring-2"
-                        defaultValue="Seçiniz"
                         title="Kategori seçiniz"
                         required
                     >
                         <option value="default" disabled>Seçiniz</option>
-                        <option value="KulturVeSanat">Kültür ve Sanat</option>
-                        <option value="KisiselGelisim">Kişisel Gelişim</option>
+                        <option value="Kültür ve Sanat">Kültür ve Sanat</option>
+                        <option value="Kişisel Gelişim">Kişisel Gelişim</option>
                         <option value="Teknoloji">Teknoloji</option>
-                        <option value="Dıger">Diğer</option>
+                        <option value="Diğer">Diğer</option>
                     </select>
                 </div>
                 <div className="my-3">
@@ -150,6 +94,7 @@ export default function AdminNewPostForm() {
                         type="text"
                         id="tags"
                         name="tags"
+                        defaultValue={tags}
                         className="py-3 px-4 block w-full ring-1 ring-gray-300 rounded-lg text-sm outline-none focus:ring-indigo-500 focus:ring-2"
                         placeholder="Etiketler (virgül ile ayırın)"
                         title="Etiketler (virgül ile ayırın)"
@@ -166,11 +111,12 @@ export default function AdminNewPostForm() {
                         type="file"
                         id="image"
                         name="image"
+                        defaultValue={image}
                         className="py-3 px-4 block w-full ring-1 ring-gray-300 rounded-lg text-sm outline-none focus:ring-indigo-500 focus:ring-2"
                         placeholder="Gönderinizin için resim dosyası yükleyiniz"
                         title='Gönderinizin için resim dosyası yükleyiniz'
                         accept="image/*"
-                        required
+                        required={isRequired}
                     />
                     <p className="text-xs text-gray-500 mt-2">Max. 5mb</p>
                 </div>
@@ -179,6 +125,7 @@ export default function AdminNewPostForm() {
                     <input
                         id="published"
                         name="published"
+                        defaultValue={published}
                         type="checkbox"
                         className="form-checkbox h-4 w-4 text-indigo-600"
                     />
@@ -188,7 +135,7 @@ export default function AdminNewPostForm() {
                         type="submit"
                         className="w-full text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg"
                     >
-                        Oluştur
+                        {buttonValue}
                     </button>
                 </div>
             </div>

@@ -1,6 +1,13 @@
-export const SuccesssNotification = ({ message }) => {
+"use client";
+import { AppContext } from "@/context/appContext"
+import { useContext } from "react"
+
+export const SuccesssNotification = () => {
+
+    let { notificationMessage, showSuccessNotification, setShowSuccessNotification } = useContext(AppContext);
+
     const closeNotification = () => {
-        document.getElementById("toast-success").style.display = "none";
+        setShowSuccessNotification(!showSuccessNotification)
     }
 
     return (
@@ -11,7 +18,7 @@ export const SuccesssNotification = ({ message }) => {
                 </svg>
                 <span className="sr-only">Başarı İkonu</span>
             </div>
-            <div className="ms-3 text-sm font-normal">{message}</div>
+            <div className="ms-3 text-sm font-normal">{notificationMessage}</div>
             <button onClick={closeNotification} id="close" type="button" className="ms-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex items-center justify-center h-8 w-8" data-dismiss-target="#toast-success" aria-label="Close">
                 <span className="sr-only">Close</span>
                 <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
@@ -22,9 +29,12 @@ export const SuccesssNotification = ({ message }) => {
     )
 }
 
-export const ErrorNotification = ({ message }) => {
+export const ErrorNotification = () => {
+
+    let { notificationMessage, showErrorNotification, setShowErrorNotification } = useContext(AppContext);
+
     const closeNotification = () => {
-        document.getElementById("toast-danger").style.display = "none";
+        setShowErrorNotification(!showErrorNotification)
     }
 
     return (
@@ -35,7 +45,7 @@ export const ErrorNotification = ({ message }) => {
                 </svg>
                 <span className="sr-only">Hata İkonu</span>
             </div>
-            <div className="ms-3 text-sm font-normal">{message}</div>
+            <div className="ms-3 text-sm font-normal">{notificationMessage}</div>
             <button onClick={closeNotification} id="close" type="button" className="ms-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex items-center justify-center h-8 w-8" data-dismiss-target="#toast-danger" aria-label="Close">
                 <span className="sr-only">Close</span>
                 <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
@@ -46,11 +56,13 @@ export const ErrorNotification = ({ message }) => {
     )
 }
 
-export const WarningNotification = ({ message }) => {
-    const closeNotification = () => {
-        document.getElementById("toast-warning").style.display = "none";
-    }
+export const WarningNotification = () => {
 
+    let { notificationMessage, showWarningNotification, setShowWarningNotification } = useContext(AppContext);
+
+    const closeNotification = () => {
+        setShowWarningNotification(!showWarningNotification)
+    }
 
     return (
         <div id="toast-warning" className="flex items-center w-full p-4 text-gray-500 bg-white rounded-lg shadow" role="alert">
@@ -60,7 +72,7 @@ export const WarningNotification = ({ message }) => {
                 </svg>
                 <span className="sr-only">Uyarı İkonu</span>
             </div>
-            <div className="ms-3 text-sm font-normal">{message}</div>
+            <div className="ms-3 text-sm font-normal">{notificationMessage}</div>
             <button onClick={closeNotification} id="close" type="button" className="ms-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex items-center justify-center h-8 w-8" data-dismiss-target="#toast-warning" aria-label="Close">
                 <span className="sr-only">Close</span>
                 <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">

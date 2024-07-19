@@ -1,9 +1,9 @@
-import AdminNewPostForm from '@/components/adminNewPostForm';
+import CreateForm from '@/components/admin_components/blog_components/createForm';
 
-export default function NewPost() {
+export default function CreatePostPage() {
     return (
         <section>
-            <AdminNewPostForm />
+            <CreateForm />
         </section>
     )
 }

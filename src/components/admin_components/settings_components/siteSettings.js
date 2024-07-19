@@ -1,22 +1,19 @@
 "use client"
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import { db, storage } from '@/database/firebase';
 import { collection, getDocs, doc, updateDoc } from 'firebase/firestore';
 import { ref, uploadBytes } from "firebase/storage";
-import { SuccesssNotification } from './notifications';
+import { SuccesssNotification } from '@/components/notifications';
 import { useRouter } from 'next/navigation';
+import { AppContext } from '@/context/appContext';
 
-const AdminSiteSettings = () => {
+export default function SiteSettings() {
     // using Form Ref for get values
     const form = useRef();
     // Router
     const navigate = useRouter();
     // Notifications states
-    const [showSuccess, setShowSuccess] = useState(false);
-    const [showError, setShowError] = useState(false);
-    const [message, setMessage] = useState(
-        "Bir hata oluştu. Lütfen tekrar deneyin."
-    );
+    let { showSuccessNotification, setShowSuccessNotification, showErrorNotification, setShowErrorNotification, setMessageNotification } = useContext(AppContext)
     // Site Settings
     const [siteTitle, setSiteTitle] = useState('');
     const [siteDescription, setSiteDescription] = useState('');
@@ -74,33 +71,33 @@ const AdminSiteSettings = () => {
                 siteLogo: logoStorageRef.name === '' ? siteLogo : logoStorageRef.name,
                 siteFavicon: iconStorageRef.name === '' ? siteFavicon : iconStorageRef.name,
             }).catch((error) => {
-                setShowError(true);
-                setMessage('Ayarlar güncellenemedi. Lütfen tekrar deneyin.' + error);
+                setShowErrorNotification(true);
+                setMessageNotification('Ayarlar güncellenemedi. Lütfen tekrar deneyin.' + error);
             });
             // get image from form and create storage reference
             if (siteLogo !== null || siteLogo !== undefined || siteLogo !== '') {
                 await uploadBytes(logoStorageRef, siteLogo).catch((error) => {
-                    setShowError(true);
-                    setMessage('Logo yükleme işlemi başarısız oldu. Lütfen tekrar deneyin.' + error);
+                    setShowErrorNotification(true);
+                    setMessageNotification('Logo yükleme işlemi başarısız oldu. Lütfen tekrar deneyin.' + error);
                 });
             }
             if (siteFavicon !== null || siteFavicon !== undefined || siteFavicon !== '') {
                 await uploadBytes(iconStorageRef, siteFavicon).catch((error) => {
-                    setShowError(true);
-                    setMessage('Favicon yükleme işlemi başarısız oldu. Lütfen tekrar deneyin' + error);
+                    setShowErrorNotification(true);
+                    setMessageNotification('Favicon yükleme işlemi başarısız oldu. Lütfen tekrar deneyin' + error);
                 });
             }
             // Show Success Message
-            setShowSuccess(true);
-            setMessage('Ayarlar başarıyla güncellendi.');
+            setShowSuccessNotification(true);
+            setMessageNotification('Ayarlar başarıyla güncellendi.');
             // Redirect to Admin Dashboard
             setTimeout(() => {
                 navigate.refresh();
             }, 2000);
         } catch (error) {
             // Show Error Message
-            setShowError(true);
-            setMessage('Ayarlar güncellenemedi.');
+            setShowErrorNotification(true);
+            setMessageNotification('Ayarlar güncellenemedi.');
         }
     };
 
@@ -230,11 +227,9 @@ const AdminSiteSettings = () => {
             </button>
             {/* Notifications */}
             <div className='p-4 bg-gray-50'>
-                {showSuccess && <SuccesssNotification message={message} />}
-                {showError && <ErrorNotification message={message} />}
+                {showSuccessNotification && <SuccesssNotification />}
+                {showErrorNotification && <ErrorNotification />}
             </div>
         </form>
     );
 };
-
-export default AdminSiteSettings;
