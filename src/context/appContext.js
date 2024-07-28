@@ -1,13 +1,23 @@
 "use client"
 import { createContext } from "react";
 import { useEffect, useState } from "react";
-import { db, storage } from "@/database/firebase";
+import { auth, db, storage } from "@/database/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { ref, getDownloadURL } from "firebase/storage";
+import { onAuthStateChanged } from "firebase/auth";
 
 export const AppContext = createContext();
 
 export default function AppContextProvider({ children }) {
+    // User State
+    const [user, setUser] = useState({
+        uid: null,
+        email: null,
+        displayName: null,
+        photoURL: null,
+        emailVerified: null,
+        session: false,
+    });
     // Site Settings
     const [siteTitle, setSiteTitle] = useState("");
     const [siteDescription, setSiteDescription] = useState("");
@@ -51,7 +61,27 @@ export default function AppContextProvider({ children }) {
         }).catch((error) => {
             console.log(error);
         });
-
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                setUser({
+                    uid: user.uid,
+                    email: user.email,
+                    displayName: user.displayName,
+                    photoURL: user.photoURL,
+                    emailVerified: user.emailVerified,
+                    session: true,
+                });
+            } else {
+                setUser({
+                    uid: null,
+                    email: null,
+                    displayName: null,
+                    photoURL: null,
+                    emailVerified: null,
+                    session: false,
+                });
+            }
+        });
     }, []);
 
     return (
@@ -68,7 +98,9 @@ export default function AppContextProvider({ children }) {
             showErrorNotification,
             setShowErrorNotification,
             showWarningNotification,
-            setShowWarningNotification
+            setShowWarningNotification,
+            user,
+            setUser
         }}>
             {children}
         </AppContext.Provider>
